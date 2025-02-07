@@ -153,6 +153,6 @@ export LDFLAGS="-L$(brew --prefix librdkafka)/lib"
 alias v=nvim
 alias vim=nvim
 alias vi=nvim
-
+alias c='clear'
 # neofetch
 neofetch
