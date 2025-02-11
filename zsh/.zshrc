@@ -154,5 +154,16 @@ alias v=nvim
 alias vim=nvim
 alias vi=nvim
 alias c='clear'
+
+
+# Git
+alias gits='git status'
+alias gita='git add -u'
+gitm() { git commit -m "$1" }
+alias gitp='git push'
+alias gitu='git commit -m "Update $(date +%F)"'
+alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
+# alias gitc='aicommits' # requires aicommits installed (https://github.com/Nutlope/aicommits)
+
 # neofetch
 neofetch
