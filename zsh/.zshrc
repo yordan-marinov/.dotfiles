@@ -149,6 +149,8 @@ if [ -f "/Users/yordan/.config/fabric/fabric-bootstrap.inc" ]; then . "/Users/yo
 export CFLAGS="-I$(brew --prefix librdkafka)/include"
 export LDFLAGS="-L$(brew --prefix librdkafka)/lib"
 
+# Tmux
+alias t=tmux
 
 # Aliaces
 alias v=nvim
@@ -173,3 +175,4 @@ alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
 
 # neofetch
 neofetch
+export PATH="$HOME/bin:$PATH"

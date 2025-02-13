@@ -51,3 +51,11 @@ require("lazy").setup({
     },
   },
 })
+
+require("telekasten").setup({
+  home = "~/second-brain/notes",
+  templates = "~/second-brain/notes/templates",
+  template_new_note = "~/second-brain/notes/new_note.md",
+})
+
+require("autocmds") -- This will load your autocmds.lua file
