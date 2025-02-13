@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check if argument is provided
+if [ -z "$1" ]; then
+    echo "Error: A note title must be set, e.g. on \"the wonderful thing about tiggers\"."
+    exit 1
+fi
+
+# Create the file name from the input argument, replacing spaces with hyphens
+file_name=$(echo "$1" | tr ' ' '-')
+formatted_file_name=${file_name}_$(date "+%d-%m-%Y").md
+
+# Define the full path to the inbox folder and the template file
+note_path="$HOME/Google Drive/My Drive/brain-box/slnotes/$formatted_file_name"
+template_path="$HOME/Google Drive/My Drive/brain-box/templates/slnote-templete.md"
+
+# Copy the template to the new note's location
+cp "$template_path" "$note_path"
+
+# Open the newly created note in nvim
+nvim "$note_path"
