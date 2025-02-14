@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Define the ~/.dotfiles directory
+dotfiles_dir="$HOME/.dotfiles"
+
+# Change to the directory
+cd "$dotfiles_dir" || {
+    echo "Error: Could not access .dotfiles directory."
+    exit 1
+}
+
+# Open in Neovim
+nvim .
