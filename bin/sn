@@ -1,21 +1,56 @@
 #!/bin/bash
 
-# Check if argument is provided
+# Check if a title was provided
 if [ -z "$1" ]; then
-    echo "Error: A note title must be set, e.g. on \"the wonderful thing about tiggers\"."
+    echo "Error: A Note title must be set, e.g. sn \"The Wonderful Thing About Tiggers\"."
     exit 1
 fi
 
-# Create the file name from the input argument, replacing spaces with hyphens
-file_name=$(echo "$1" | tr ' ' '-')
-formatted_file_name=${file_name}_$(date "+%d-%m-%Y").md
+# Capitalize each word correctly
+formatted_title=$(echo "$1" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)}1')
 
-# Define the full path to the inbox folder and the template file
-note_path="$HOME/Google Drive/My Drive/brain-box/slnotes/$formatted_file_name"
-template_path="$HOME/Google Drive/My Drive/brain-box/templates/slnote-templete.md"
+# Replace spaces with hyphens while keeping capitalization
+file_name=$(echo "$formatted_title" | tr ' ' '-')
+formatted_file_name="${file_name}.md"
 
-# Copy the template to the new note's location
-cp "$template_path" "$note_path"
+# Define paths
+note_dir="$HOME/Google Drive/My Drive/brain-box/slnotes"
+archive_dir="$HOME/Google Drive/My Drive/brain-box/llnotes" # Archive folder
+note_path="$note_dir/$formatted_file_name"
+archive_path="$archive_dir/$formatted_file_name"
 
-# Open the newly created note in nvim
+# Ensure the notes directory exists
+mkdir -p "$note_dir"
+
+# Check if the file already exists in either folder
+while [ -f "$note_path" ] || [ -f "$archive_path" ]; do
+    if [ -f "$note_path" ]; then
+        existing_folder="slnote"
+    else
+        existing_folder="llnote"
+    fi
+
+    echo "Error: A Note with this title already exists in $existing_folder."
+    read -p "Enter a unique Note title: " new_title
+
+    # Reformat the new title
+    formatted_title=$(echo "$new_title" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)}1')
+    file_name=$(echo "$formatted_title" | tr ' ' '-')
+    formatted_file_name="${file_name}.md"
+
+    # Update paths
+    note_path="$note_dir/$formatted_file_name"
+    archive_path="$archive_dir/$formatted_file_name"
+done
+
+# Write the default template to the new note
+cat <<EOF >"$note_path"
+# $formatted_title
+
+## Ideas / Thoughts
+
+Created on: $(date "+%d-%m-%Y %H:%M:%S")
+EOF
+
+# Open the note in Neovim
 nvim "$note_path"

@@ -58,4 +58,4 @@ require("telekasten").setup({
   template_new_note = "~/second-brain/notes/new_note.md",
 })
 
-require("autocmds") -- This will load your autocmds.lua file
+require("config.autocmds") -- This will load your autocmds.lua file
