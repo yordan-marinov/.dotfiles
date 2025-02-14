@@ -52,10 +52,12 @@ require("lazy").setup({
   },
 })
 
+-- Telekasten setup with a custom new note command
 require("telekasten").setup({
-  home = "~/second-brain/notes",
-  templates = "~/second-brain/notes/templates",
-  template_new_note = "~/second-brain/notes/new_note.md",
+  home = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/slnotes",
+  templates = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/templates",
+  template_new_note = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/templates/slnote-template.md",
 })
 
-require("config.autocmds") -- This will load your autocmds.lua file
+-- Load custom autocmds from autocomds.lua
+require("config.autocmds")
