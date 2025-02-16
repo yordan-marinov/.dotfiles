@@ -30,7 +30,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "tokyonight", "habamax" } },
+  -- install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update
@@ -45,9 +45,19 @@ require("lazy").setup({
         -- "netrwPlugin",
         "tarPlugin",
         "tohtml",
-        "tutor",
+        -- "tutor",
         "zipPlugin",
       },
     },
   },
 })
+
+-- Telekasten setup with a custom new note command
+require("telekasten").setup({
+  home = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/slnotes",
+  templates = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/templates",
+  template_new_note = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/templates/slnote-template.md",
+})
+
+-- Load custom autocmds from autocomds.lua
+require("config.autocmds")

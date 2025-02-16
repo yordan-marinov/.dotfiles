@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Define the brain-box directory
+brain_box_dir="$HOME/Google Drive/My Drive/brain-box"
+
+# Change to the directory
+cd "$brain_box_dir" || {
+    echo "Error: Could not access brain-box directory."
+    exit 1
+}
+
+# Open in Neovim
+nvim .

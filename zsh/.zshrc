@@ -149,10 +149,30 @@ if [ -f "/Users/yordan/.config/fabric/fabric-bootstrap.inc" ]; then . "/Users/yo
 export CFLAGS="-I$(brew --prefix librdkafka)/include"
 export LDFLAGS="-L$(brew --prefix librdkafka)/lib"
 
+# Tmux
+alias t=tmux
+
 # Aliaces
 alias v=nvim
 alias vim=nvim
 alias vi=nvim
+alias c='clear'
+alias pwdy="echo $(pwd) | pbcopy"
+catcp() { cat $1 | pbcopy }  # For Lunux install pbcopy with xclip (apt update && apt install xclip)
+
+## Lazygit
+alias lg=lazygit
+
+## Git
+alias gits='git status'
+alias gita='git add -u'
+gitm() { git commit -m "$1" }
+alias gitp='git push'
+alias gitu='git commit -m "Update $(date +%F)"'
+alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
+# alias gitc='aicommits' # requires aicommits installed (https://github.com/Nutlope/aicommits)
+
 
 # neofetch
 neofetch
+export PATH="$HOME/bin:$PATH"
