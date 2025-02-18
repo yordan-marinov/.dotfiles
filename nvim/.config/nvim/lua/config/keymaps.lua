@@ -55,22 +55,36 @@ local keymaps = {
   -- SLNotes: Open all markdown notes as buffers
   ["<leader>zr"] = {
     function()
-      -- Change to slnotes directory
-      vim.cmd("cd ~/Google\\ Drive/My\\ Drive/brain-box/slnotes")
+      -- Define the SLNotes directory and expand the path
+      local notes_dir = vim.fn.expand("~/Google Drive/My Drive/brain-box/slnotes")
 
-      -- Get list of markdown files in the directory
-      local files = vim.fn.glob("~/Google Drive/My Drive/brain-box/slnotes/*.md", false, true)
+      -- Change the working directory to SLNotes
+      vim.cmd("cd " .. vim.fn.fnameescape(notes_dir))
 
-      -- Open each file in a new buffer
+      -- Get the list of markdown files in the directory
+      local files = vim.fn.glob(notes_dir .. "/*.md", true, true)
+
+      -- Check if any files were found
+      if #files == 0 then
+        print("No markdown notes found in SLNotes.")
+        return
+      end
+
+      -- Open each markdown file in a new buffer
       for _, file in ipairs(files) do
         vim.cmd("edit " .. vim.fn.fnameescape(file))
       end
     end,
     "Open all SLNotes in buffers",
   },
+  -- Move current note to LLNotes
+  ["<leader>ml"] = { ":!mv '%:p' ~/Google\\ Drive/My\\ Drive/brain-box/llnotes/<cr>:bd<cr>", "Move Note to LLNotes" },
 
-  -- Create a new note using custom template
-  ["<leader>zn"] = { create_new_note_with_template, "Create New Note" },
+  -- Move current note to MNotes
+  ["<leader>mm"] = { ":!mv '%:p' ~/Google\\ Drive/My\\ Drive/brain-box/mnotes/<cr>:bd<cr>", "Move Note to MNotes" },
+
+  -- Delete current note
+  ["<leader>md"] = { ":!rm '%:p'<cr>:bd<cr>", "Delete Current Note" },
 }
 
 -- Apply the new keymap format
