@@ -57,7 +57,9 @@ require("telekasten").setup({
   home = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/slnotes",
   templates = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/templates",
   template_new_note = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box/templates/slnote-template.md",
+  fallback_note_dir = vim.fn.expand("~") .. "/Google Drive/My Drive/brain-box",
 })
 
 -- Load custom autocmds from autocomds.lua
 require("config.autocmds")
+
