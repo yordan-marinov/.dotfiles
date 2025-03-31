@@ -44,6 +44,18 @@ local keymaps = {
     "Close Debugger",
   },
 
+  -- Obsidian.nvim Keymaps
+  ["<leader>oo"] = { "<cmd>ObsidianOpen<CR>", "Open Obsidian" },
+  ["<leader>on"] = { "<cmd>ObsidianNew<CR>", "Create a new note" },
+  ["<leader>os"] = { "<cmd>ObsidianSearch<CR>", "Search notes" },
+  ["<leader>od"] = { "<cmd>ObsidianToday<CR>", "Open today's daily note" },
+  ["<leader>ow"] = { "<cmd>ObsidianTomorrow<CR>", "Open tomorrow's daily note" },
+  ["<leader>of"] = { "<cmd>ObsidianFollowLink<CR>", "Follow link under cursor" },
+  ["<leader>ob"] = { "<cmd>ObsidianBacklinks<CR>", "Show backlinks" },
+  ["<leader>oq"] = { "<cmd>ObsidianQuickSwitch<CR>", "Quick switcher" },
+  ["<leader>ox"] = { "<cmd>ObsidianToggleCheckbox<CR>", "Toggle checkbox" },
+  ["<leader>op"] = { "<cmd>ObsidianPasteImg<CR>", "Paste image" },
+
   -- SLNotes: Open all markdown notes as buffers
   ["<leader>zr"] = {
     function()
