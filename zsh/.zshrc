@@ -175,4 +175,13 @@ alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
 
 # neofetch
 neofetch
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:$PATH"# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/yordan/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+eval "$(pyenv init -)"
+
+alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
+

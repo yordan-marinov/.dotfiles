@@ -95,3 +95,6 @@ local keymaps = {
 for key, mapping in pairs(keymaps) do
   vim.keymap.set("n", key, mapping[1], { desc = mapping[2] })
 end
+
+-- Custom keymap to exit insert mode by typing 'jj'
+vim.keymap.set("i", "jj", "<Esc>", { desc = "Exit insert mode" })
