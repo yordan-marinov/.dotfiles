@@ -160,6 +160,13 @@ alias c='clear'
 alias pwdy="echo $(pwd) | pbcopy"
 catcp() { cat $1 | pbcopy }  # For Lunux install pbcopy with xclip (apt update && apt install xclip)
 
+# Aliaces conig files
+alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'
+alias vdfv='vim $HOME/.dotfiles/vim/.vimrc'
+alias vdfz='vim $home/.dotfiles/zsh/.zshrc'
+alias vdfg='vim $HOME/.dotfiles/git/.gitconfig'
+alias vdfk='vim $HOME/.dotfiles/kitty/kitty.conf'
+
 ## Lazygit
 alias lg=lazygit
 
@@ -175,4 +182,13 @@ alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
 
 # neofetch
 neofetch
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:$PATH"# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/yordan/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+eval "$(pyenv init -)"
+
+alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
+
