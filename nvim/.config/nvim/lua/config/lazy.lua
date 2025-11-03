@@ -52,5 +52,7 @@ require("lazy").setup({
   },
 })
 
--- Load custom autocmds from autocomds.lua
+-- Load custom autocmds, keymaps, options from autocomds.lua, keymaps.lua and options.lua.
 require("config.autocmds")
+require("config.keymaps")
+require("config.options")

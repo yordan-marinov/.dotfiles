@@ -159,13 +159,18 @@ alias vi=nvim
 alias c='clear'
 alias pwdy="echo $(pwd) | pbcopy"
 catcp() { cat $1 | pbcopy }  # For Lunux install pbcopy with xclip (apt update && apt install xclip)
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
 
 # Aliaces conig files
 alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'
 alias vdfv='vim $HOME/.dotfiles/vim/.vimrc'
-alias vdfz='vim $home/.dotfiles/zsh/.zshrc'
+alias vdfz='vim $HOME/.dotfiles/zsh/.zshrc'
 alias vdfg='vim $HOME/.dotfiles/git/.gitconfig'
-alias vdfk='vim $HOME/.dotfiles/kitty/kitty.conf'
+alias vdfk='vim $HOME/.dotfiles/.config/kitty/kitty.conf'
 
 ## Lazygit
 alias lg=lazygit
