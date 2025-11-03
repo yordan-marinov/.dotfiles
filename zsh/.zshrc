@@ -171,6 +171,7 @@ alias vdfv='vim $HOME/.dotfiles/vim/.vimrc'
 alias vdfz='vim $HOME/.dotfiles/zsh/.zshrc'
 alias vdfg='vim $HOME/.dotfiles/git/.gitconfig'
 alias vdfk='vim $HOME/.dotfiles/.config/kitty/kitty.conf'
+alias vdfo='vim $HOME/.dotfiles/nvim/.config/nvim/lua/plugins'
 
 ## Lazygit
 alias lg=lazygit
