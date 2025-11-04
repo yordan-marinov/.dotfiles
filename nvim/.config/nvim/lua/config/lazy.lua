@@ -29,20 +29,14 @@ require("lazy").setup({
 
     -- 🧠 Your personal plugin collection
     { import = "plugins" },
-
-    -- Optionally import specific groups
-    -- { import = "plugins.ui" },
-    -- { import = "plugins.coding" },
-    -- { import = "plugins.obsidian" },
   },
 
   defaults = {
-    lazy = false, -- load your custom plugins immediately (set true to lazy-load)
-    version = false, -- always use latest git commit
+    lazy = false,
+    version = false,
   },
 
   install = {
-    -- choose default colorschemes
     colorscheme = { "tokyonight", "catppuccin", "habamax" },
   },
 
@@ -53,9 +47,9 @@ require("lazy").setup({
   },
 
   checker = {
-    enabled = true, -- automatically check for plugin updates
-    notify = false, -- disable annoying notifications
-    frequency = 3600, -- check every hour
+    enabled = true,
+    notify = false,
+    frequency = 3600,
   },
 
   change_detection = {
@@ -90,22 +84,6 @@ end)
 if not ok then
   vim.notify("⚠️ Failed to load some config modules", vim.log.levels.WARN)
 end
-
--- ============================================
--- Optional: Start Alpha Dashboard if no file
--- ============================================
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    if vim.fn.argc() == 0 then
-      local ok, alpha = pcall(require, "alpha")
-      if ok then
-        alpha.start(true)
-      else
-        vim.notify("Alpha not found – skipping dashboard", vim.log.levels.WARN)
-      end
-    end
-  end,
-})
 
 -- ============================================
 -- Friendly Startup Message
