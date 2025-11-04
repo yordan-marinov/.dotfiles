@@ -15,8 +15,8 @@ vim.g.maplocalleader = " "
 -- =========================================
 keymap("n", "<leader>nh", ":nohlsearch<CR>", opts) -- clear search highlights
 keymap("n", "<leader>q", ":qa<CR>", opts) -- quit all
-keymap("n", "<leader>w", ":w<CR>", opts) -- save file
-keymap("i", "jj", "<ESC>", opts) -- quick exit insert mode
+keymap("n", "<leader>wf", ":w<CR>", opts) -- save file
+keymap("i", "jj", "<Esc>", opts) -- exit insert mode
 keymap("n", "<leader>so", ":source %<CR>", opts) -- source current file
 
 -- =========================================
