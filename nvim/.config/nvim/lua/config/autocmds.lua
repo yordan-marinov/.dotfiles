@@ -38,3 +38,17 @@ vim.api.nvim_create_autocmd("BufNewFile", {
   end,
 })
 
+-- ✅ Prevent Neovim from quitting when the last buffer is closed
+vim.api.nvim_create_autocmd("BufDelete", {
+  callback = function()
+    -- Count how many listed (normal) buffers remain
+    local listed = vim.tbl_filter(function(buf)
+      return vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted
+    end, vim.api.nvim_list_bufs())
+
+    -- If none remain, open a new empty one
+    if #listed == 0 then
+      vim.cmd("enew")
+    end
+  end,
+})
