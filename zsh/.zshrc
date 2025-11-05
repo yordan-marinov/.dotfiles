@@ -165,7 +165,8 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 
-alias dot='cd $HOME/.dotfiles && git status'
+# Alias for .dotfiles
+alias dot='cd $HOME/.dotfiles && git pull'
 
 # Aliaces conig files
 alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'

@@ -1,5 +1,5 @@
 -- =========================================
--- 🧠 Brain-Box | Neovim Keymaps
+-- 🧠 Brain-Box | Neovim Keymaps (Google Drive Synced)
 -- =========================================
 
 -- Shorten function name
@@ -36,20 +36,33 @@ keymap("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", opts)
 -- =========================================
 -- 📁 File Explorer & Telescope
 -- =========================================
-keymap("n", "<leader>e", ":Neotree toggle<CR>", opts) -- open file tree (if using Neo-tree)
+keymap("n", "<leader>e", ":Neotree toggle<CR>", opts) -- toggle Neo-tree
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>", opts)
 keymap("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", opts)
 keymap("n", "<leader>fb", "<cmd>Telescope buffers<CR>", opts)
 keymap("n", "<leader>fh", "<cmd>Telescope help_tags<CR>", opts)
 
 -- =========================================
--- 🧱 Obsidian & Brain-Box
+-- 🧱 Obsidian / Brain-Box Notes
 -- =========================================
-keymap("n", "<leader>on", ":ObsidianNew<CR>", opts) -- create new note
-keymap("n", "<leader>ot", ":ObsidianToday<CR>", opts) -- open today's daily note
-keymap("n", "<leader>oy", ":ObsidianYesterday<CR>", opts) -- open yesterday's daily note
+keymap("n", "<leader>on", ":ObsidianNew<CR>", opts) -- new note
+keymap("n", "<leader>ot", ":ObsidianToday<CR>", opts) -- daily note (today)
+keymap("n", "<leader>oy", ":ObsidianYesterday<CR>", opts) -- daily note (yesterday)
 keymap("n", "<leader>os", ":ObsidianSearch<CR>", opts) -- search in vault
 keymap("n", "<leader>ol", ":ObsidianLink<CR>", opts) -- link current note
+
+-- =========================================
+-- 🗂️ Brain-Box | Folder Access (Neo-tree)
+-- =========================================
+-- Opens Neo-tree directly inside Brain-Box folders synced with Google Drive
+local brain_box_path = "/Users/yordan/Google Drive/My Drive/brain-box"
+
+keymap("n", "<leader>nb", ":Neotree " .. brain_box_path .. " reveal<CR>", opts) -- open main brain-box
+keymap("n", "<leader>nn", ":Neotree " .. brain_box_path .. "/notes reveal<CR>", opts) -- general notes
+keymap("n", "<leader>nd", ":Neotree " .. brain_box_path .. "/dailies reveal<CR>", opts) -- daily notes
+keymap("n", "<leader>nl", ":Neotree " .. brain_box_path .. "/learning reveal<CR>", opts) -- learning notes
+keymap("n", "<leader>ns", ":Neotree " .. brain_box_path .. "/slnotes reveal<CR>", opts) -- study/lab notes
+keymap("n", "<leader>nc", ":Neotree " .. brain_box_path .. "/cheatsheets reveal<CR>", opts) -- cheatsheets folder
 
 -- =========================================
 -- ⚙️ Config & Dotfiles Shortcuts
@@ -77,11 +90,6 @@ keymap("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 keymap("n", "<leader>tt", ":ToggleTerm<CR>", opts) -- toggle terminal
 keymap("t", "<Esc>", "<C-\\><C-n>", opts) -- exit terminal mode
 keymap("n", "<leader>ss", ":StartupTime<CR>", opts) -- check startup time
-
--- =========================================
--- 💡 Alpha Dashboard (if installed)
--- =========================================
-keymap("n", "<leader>aa", ":Alpha<CR>", opts)
 
 -- =========================================
 -- 🧹 Buffer Management
