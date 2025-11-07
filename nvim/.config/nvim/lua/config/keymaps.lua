@@ -54,7 +54,7 @@ keymap("n", "<leader>onn", ":ObsidianNew<CR>", opts) -- new note
 keymap("n", "<leader>ond", ":ObsidianToday<CR>", opts) -- new daily note
 keymap("n", "<leader>ony", ":ObsidianYesterday<CR>", opts) -- open yesterday's daily
 -- keymap("n", "<leader>onl", ":e " .. brain_box_path .. "/learning<CR>", opts) -- open learning folder check the functions on bottom
-keymap("n", "<leader>ons", ":e " .. brain_box_path .. "/slnotes<CR>", opts) -- open slnotes folder
+-- keymap("n", "<leader>ons", ":e " .. brain_box_path .. "/slnotes<CR>", opts) -- open slnotes folder check the functions on bottom
 keymap("n", "<leader>onL", ":e " .. brain_box_path .. "/llnotes<CR>", opts) -- open llnotes folder
 -- keymap("n", "<leader>onc", ":e " .. brain_box_path .. "/cheatsheets<CR>", opts) -- open cheatsheets folder check the functions on bottom
 keymap("n", "<leader>onp", ":e " .. brain_box_path .. "/projects<CR>", opts) -- open projects folder
@@ -62,8 +62,11 @@ keymap("n", "<leader>oni", ":e " .. brain_box_path .. "/index.md<CR>", opts) -- 
 
 -- Obsidian utilities
 keymap("n", "<leader>os", ":ObsidianSearch<CR>", opts) -- search in vault
-keymap("n", "<leader>ol", ":ObsidianLink<CR>", opts) -- link note
 keymap("n", "<leader>oo", ":e " .. brain_box_path .. "<CR>", opts) -- open brain-box root
+
+-- Linking / Navigation inside notes
+-- keymap("n", "<leader>olf", ":ObsidianFollowLink<CR>", opts) -- follow or create note from link check the functions on bottom
+keymap("n", "<leader>oll", ":ObsidianLink<CR>", opts) -- create a link to another note
 
 -- =========================================
 -- ⚙️ Config & Dotfiles Shortcuts
@@ -194,4 +197,157 @@ vim.keymap.set("n", "<leader>onc", create_cheatsheet, {
   desc = "New Cheatsheet (auto template)",
   noremap = true,
   silent = true,
+})
+
+-- Create new Code Snippet
+local function create_snippet()
+  create_note(
+    "/Users/yordan/Google Drive/My Drive/brain-box/snippets",
+    "/Users/yordan/Google Drive/My Drive/brain-box/_templates/snippet.md",
+    "Code Snippet",
+    "snippet"
+  )
+end
+
+vim.keymap.set("n", "<leader>ons", create_snippet, {
+  desc = "New Code Snippet (auto template)",
+  noremap = true,
+  silent = true,
+})
+
+-- =========================================
+-- 🧩 Smart Obsidian Link Follow or Create
+-- =========================================
+local function follow_or_create_obsidian_link_smart()
+  -- Base paths
+  local vault_path = "/Users/yordan/Google Drive/My Drive/brain-box"
+  local templates_path = vault_path .. "/_templates"
+
+  -- Get link name under cursor
+  local link = vim.fn.expand("<cWORD>"):gsub("[%[%]]", ""):gsub("%.md", "")
+  if link == "" then
+    print("⚠️ No link under cursor.")
+    return
+  end
+
+  -- Get all top-level folders inside the vault
+  local handle = io.popen('ls -1 "' .. vault_path .. '"')
+  if not handle then
+    print("⚠️ Unable to read vault folders.")
+    return
+  end
+
+  local folders = {}
+  for line in handle:lines() do
+    local path = vault_path .. "/" .. line
+    if vim.fn.isdirectory(path) == 1 and not line:match("^_") then
+      table.insert(folders, line)
+    end
+  end
+  handle:close()
+
+  -- Ask user for folder name
+  local folder = vim.fn.input("📁 Folder for new note (default: slnotes): ")
+
+  -- Validate folder
+  while folder ~= "" and vim.fn.isdirectory(vault_path .. "/" .. folder) == 0 do
+    print("⚠️ Folder '" .. folder .. "' does not exist.")
+    print("Available folders: " .. table.concat(folders, ", "))
+    folder = vim.fn.input("Please enter an existing folder name: ")
+  end
+
+  if folder == "" then
+    folder = "slnotes"
+  end
+
+  local note_path = vault_path .. "/" .. folder .. "/" .. link .. ".md"
+
+  -- If note already exists, just open it
+  if vim.fn.filereadable(note_path) == 1 then
+    vim.cmd("edit " .. note_path)
+    return
+  end
+
+  -- 🧩 Template selection map (based on your _templates folder)
+  local template_map = {
+    cheatsheets = "cheatsheet.md",
+    snippets = "code-snippet.md",
+    dailies = "daily.md",
+    learning = "learning.md",
+    slnotes = "slnote.md",
+    mnotes = "mnote.md",
+  }
+
+  -- Detect template name from folder
+  local template_name = template_map[folder] or "slnote.md"
+  local template_file = templates_path .. "/" .. template_name
+
+  local content = {}
+
+  -- Use template if exists, else fallback
+  if vim.fn.filereadable(template_file) == 1 then
+    content = vim.fn.readfile(template_file)
+  else
+    print("⚠️ No template found for '" .. folder .. "', using fallback.")
+    content = {
+      "---",
+      "created: " .. os.date("%d-%m-%Y %H:%M:%S"),
+      "title: " .. link,
+      "tags: [" .. folder .. "]",
+      "---",
+      "",
+      "# " .. link,
+      "",
+    }
+  end
+
+  -- Replace placeholders dynamically
+  local date = os.date("%d-%m-%Y")
+  local time = os.date("%H:%M:%S")
+  for i, line in ipairs(content) do
+    line = line:gsub("{{date}}", date)
+    line = line:gsub("{{time}}", time)
+    line = line:gsub("{{title}}", link)
+    line = line:gsub("{{tag}}", folder)
+    content[i] = line
+  end
+
+  -- Ensure folder exists
+  vim.fn.mkdir(vault_path .. "/" .. folder, "p")
+
+  -- Write and open the new note
+  vim.fn.writefile(content, note_path)
+  print("🧠 Created new note in '" .. folder .. "': " .. link)
+  vim.cmd("edit " .. note_path)
+  vim.cmd("Neotree reveal")
+end
+
+-- Keymap: Follow or Create Link (smart)
+keymap("n", "<leader>olf", follow_or_create_obsidian_link_smart, {
+  noremap = true,
+  silent = true,
+  desc = "Follow or Create Obsidian Link (smart)",
+})
+
+-- =========================================
+-- 🌐 Open Link Under Cursor in Browser
+-- =========================================
+local function open_link_in_browser()
+  local word = vim.fn.expand("<cWORD>")
+  local url = word:match("(https?://[%w%-%._~:/%?#@!$&'()*+,;%%]+)")
+
+  if not url then
+    print("⚠️ No valid URL under cursor.")
+    return
+  end
+
+  -- macOS command to open URLs in the default browser
+  os.execute("open " .. url)
+  print("🌐 Opening in browser: " .. url)
+end
+
+vim.keymap.set("n", "<leader>ob", open_link_in_browser, {
+  noremap = true,
+  silent = true,
+  desc = "Open link under cursor in browser",
 })
