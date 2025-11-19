@@ -1,7 +1,8 @@
 -- =========================================
--- 🧠 Brain-Box | Neovim Keymaps
+-- 🧠 Neovim Keymaps | Brain-Box (Final Version)
 -- =========================================
 
+-- Shorten function names
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
@@ -9,388 +10,269 @@ local opts = { noremap = true, silent = true }
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Path to Brain-Box (portable)
+-- =========================================
+-- 🌍 Base Paths
+-- =========================================
 local home = os.getenv("HOME")
 local brain_box_path = home .. "/Google Drive/My Drive/brain-box"
+local templates_path = brain_box_path .. "/_templates"
 
 -- =========================================
--- 🚀 General Keymaps
+-- 🪶 General Shortcuts
 -- =========================================
-local general = {
-  { "n", "<leader>nh", ":nohlsearch<CR>", "Clear search highlights" },
-  { "n", "<leader>w", ":w<CR>", "Save file" },
-  { "n", "<leader>wq", ":wq<CR>", "Save & quit" },
-  { "n", "<leader>q", ":qa<CR>", "Quit all" },
-  { "i", "jj", "<Esc>", "Exit insert mode" },
-  { "n", "<leader>so", ":source %<CR>", "Source current file" },
-}
+keymap("n", "jj", "<Esc>", opts) -- exit insert mode
+keymap("n", "<leader>so", ":source %<CR>", opts) -- source current file
 
-for _, map in ipairs(general) do
-  keymap(map[1], map[2], map[3], opts)
+-- =========================================
+-- 🌲 Window / Split Management (w)
+-- =========================================
+keymap("n", "<leader>ws", "<C-w>v", opts) -- vertical split
+keymap("n", "<leader>wh", "<C-w>s", opts) -- horizontal split
+keymap("n", "<leader>we", "<C-w>=", opts) -- equalize splits
+keymap("n", "<leader>wx", ":close<CR>", opts) -- close current split
+
+-- =========================================
+-- 🚪 Navigation Between Splits (Ctrl + hjkl)
+-- =========================================
+keymap("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", opts)
+keymap("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", opts)
+keymap("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", opts)
+keymap("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", opts)
+
+-- =========================================
+-- 📂 Keymaps: Which-Key Domains
+-- =========================================
+local wk_ok, which_key = pcall(require, "which-key")
+if not wk_ok then
+  return
 end
 
--- =========================================
--- 🪟 Window / Split Management
--- =========================================
-local window = {
-  { "n", "<leader>ws", "<C-w>v", "Split vertically" },
-  { "n", "<leader>wh", "<C-w>s", "Split horizontally" },
-  { "n", "<leader>we", "<C-w>=", "Equalize splits" },
-  { "n", "<leader>wx", ":close<CR>", "Close split" },
-  { "n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", "Move left" },
-  { "n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", "Move down" },
-  { "n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", "Move up" },
-  { "n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", "Move right" },
-}
-
-for _, map in ipairs(window) do
-  keymap(map[1], map[2], map[3], opts)
-end
-
--- =========================================
--- 📂 File Explorer & Telescope
--- =========================================
-local files = {
-  { "n", "<leader>e", ":Neotree toggle<CR>", "Toggle file tree" },
-  { "n", "<leader>ff", "<cmd>Telescope find_files<CR>", "Find files" },
-  { "n", "<leader>fg", "<cmd>Telescope live_grep<CR>", "Live grep" },
-  { "n", "<leader>fb", "<cmd>Telescope buffers<CR>", "Buffers" },
-  { "n", "<leader>fh", "<cmd>Telescope help_tags<CR>", "Help tags" },
-}
-
-for _, map in ipairs(files) do
-  keymap(map[1], map[2], map[3], opts)
-end
-
--- =========================================
--- ⚙️ Config & Dotfiles
--- =========================================
-local config_files = {
-  { "n", "<leader>vc", ":e ~/.config/nvim/init.lua<CR>", "Edit init.lua" },
-  { "n", "<leader>vl", ":e ~/.config/nvim/lua/config/lazy.lua<CR>", "Edit lazy.lua" },
-  { "n", "<leader>vk", ":e ~/.config/nvim/lua/config/keymaps.lua<CR>", "Edit keymaps.lua" },
-  { "n", "<leader>vt", ":e ~/.config/nvim/lua/plugins/treesitter.lua<CR>", "Edit treesitter.lua" },
-  { "n", "<leader>vz", ":e ~/.zshrc<CR>", "Edit zshrc" },
-  { "n", "<leader>vtm", ":e ~/.tmux.conf<CR>", "Edit tmux.conf" },
-  { "n", "<leader>vd", ":Neotree ~/.dotfiles reveal<CR>", "Open dotfiles" },
-}
-
-for _, map in ipairs(config_files) do
-  keymap(map[1], map[2], map[3], opts)
-end
-
--- =========================================
--- 🧩 LSP & Completion
--- =========================================
-local lsp = {
-  { "n", "K", vim.lsp.buf.hover, "Hover" },
-  { "n", "gd", vim.lsp.buf.definition, "Go to definition" },
-  { "n", "gr", vim.lsp.buf.references, "References" },
-  { "n", "gi", vim.lsp.buf.implementation, "Implementation" },
-  { "n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol" },
-  { "n", "<leader>ca", vim.lsp.buf.code_action, "Code action" },
-  {
-    "n",
-    "<leader>cf",
-    function()
-      vim.lsp.buf.format({ async = true })
-    end,
-    "Format file",
-  },
-}
-
-for _, map in ipairs(lsp) do
-  keymap(map[1], map[2], map[3], opts)
-end
-
--- =========================================
--- 🧹 Buffer Management
--- =========================================
-local buffers = {
-  { "n", "<leader>bn", ":bnext<CR>", "Next buffer" },
-  { "n", "<leader>bp", ":bprevious<CR>", "Previous buffer" },
-  { "n", "<leader>bd", ":bdelete<CR>", "Delete buffer" },
-}
-
-for _, map in ipairs(buffers) do
-  keymap(map[1], map[2], map[3], opts)
-end
-
--- =========================================
--- 🪶 Misc Utilities
--- =========================================
-local misc = {
-  { "n", "<leader>tt", ":ToggleTerm<CR>", "Toggle terminal" },
-  { "t", "<Esc>", "<C-\\><C-n>", "Exit terminal mode" },
-  { "n", "<leader>ss", ":StartupTime<CR>", "Startup time" },
-}
-
-for _, map in ipairs(misc) do
-  keymap(map[1], map[2], map[3], opts)
-end
-
--- =========================================
--- 🌲 Neo-tree Shortcuts
--- =========================================
-local neo_tree = {
-  { "n", "<leader>ef", ":Neotree reveal<CR>", "Reveal current file" },
-  { "n", "<leader>er", ":Neotree refresh<CR>", "Refresh tree" },
-}
-
-for _, map in ipairs(neo_tree) do
-  keymap(map[1], map[2], map[3], opts)
-end
-
--- =========================================
--- 🧠 Brain-Box / Obsidian Notes Functions
--- =========================================
--- Reusable create_note function
-local function create_note(base_dir, template_file, prompt_name, tag)
-  local filename = vim.fn.input("New " .. prompt_name .. " name: ")
+-- =========================
+-- Helper Functions
+-- =========================
+-- Create new note from template
+local function create_note(base_dir, template_file, tag)
+  local filename = vim.fn.input("New note name: ")
   if filename == "" then
-    return print("Cancelled.")
+    return print("Cancelled")
   end
 
   local path = base_dir .. "/" .. filename .. ".md"
   vim.fn.mkdir(vim.fn.fnamemodify(path, ":h"), "p")
 
-  if vim.fn.filereadable(template_file) == 0 then
-    return print("Template not found: " .. template_file)
+  local content = {}
+  if vim.fn.filereadable(template_file) == 1 then
+    content = vim.fn.readfile(template_file)
+  else
+    content = { "# " .. filename, "Created on: " .. os.date("%d-%m-%Y") }
   end
 
-  local template = vim.fn.readfile(template_file)
-  local date = os.date("%d-%m-%Y")
-  local time = os.date("%H:%M:%S")
-  local title = vim.fn.fnamemodify(filename, ":t")
-
-  for i, line in ipairs(template) do
+  -- Replace placeholders
+  local date, time = os.date("%d-%m-%Y"), os.date("%H:%M:%S")
+  for i, line in ipairs(content) do
     line = line:gsub("{{date}}", date)
     line = line:gsub("{{time}}", time)
-    line = line:gsub("{{title}}", title)
+    line = line:gsub("{{title}}", filename)
     line = line:gsub("{{tag}}", tag or "")
-    line = line:gsub("{{date:.-}}", date .. " " .. time)
-    template[i] = line
+    content[i] = line
   end
 
-  vim.fn.writefile(template, path)
+  vim.fn.writefile(content, path)
   vim.cmd("edit " .. path)
   vim.cmd("Neotree reveal")
 end
 
--- Specific templates
+-- Specific creators
 local function create_learning_note()
-  create_note(brain_box_path .. "/learning", brain_box_path .. "/_templates/learning.md", "Learning Note", "learning")
+  create_note(brain_box_path .. "/learning", templates_path .. "/learning.md", "learning")
 end
-
 local function create_cheatsheet()
-  create_note(
-    brain_box_path .. "/cheatsheets",
-    brain_box_path .. "/_templates/cheatsheet.md",
-    "Cheatsheet",
-    "cheatsheet"
-  )
+  create_note(brain_box_path .. "/cheatsheets", templates_path .. "/cheatsheet.md", "cheatsheet")
 end
-
 local function create_snippet()
-  create_note(brain_box_path .. "/snippets", brain_box_path .. "/_templates/snippet.md", "Code Snippet", "snippet")
+  create_note(brain_box_path .. "/snippets", templates_path .. "/snippet.md", "snippet")
 end
 
--- =========================================
--- 📦 Project Management Functions
--- =========================================
-local function create_new_project_scaffold()
-  local projects_path = brain_box_path .. "/projects"
-  local project_name = vim.fn.input("Project name: ")
-  if project_name == "" then
-    return print("Cancelled")
+-- Follow or create smart Obsidian link
+local function follow_or_create_obsidian_link_smart()
+  local vault = brain_box_path
+  local link = vim.fn.expand("<cWORD>"):gsub("[%[%]]", ""):gsub("%.md", "")
+  if link == "" then
+    return print("⚠️ No link under cursor")
   end
 
-  local project_path = projects_path .. "/" .. project_name
-  if vim.fn.isdirectory(project_path) == 1 then
-    print("Project already exists: " .. project_name)
-    vim.cmd("Neotree reveal " .. project_path)
-    return
+  local folder = vim.fn.input("Folder (default: slnotes): ")
+  folder = folder ~= "" and folder or "slnotes"
+  while vim.fn.isdirectory(vault .. "/" .. folder) == 0 do
+    print("⚠️ Folder does not exist")
+    folder = vim.fn.input("Enter existing folder: ")
   end
 
-  local structure = {
-    "01-overview",
-    "02-decisions",
-    "03-infrastructure",
-    "04-platform",
-    "05-software",
-    "06-network",
-    "07-storage",
-    "08-operations",
-    "09-docs",
-    "10-architecture",
+  local note_path = vault .. "/" .. folder .. "/" .. link .. ".md"
+  if vim.fn.filereadable(note_path) == 1 then
+    return vim.cmd("edit " .. note_path)
+  end
+
+  local template_map = {
+    cheatsheets = "cheatsheet.md",
+    snippets = "snippet.md",
+    learning = "learning.md",
+    slnotes = "slnote.md",
+    mnotes = "mnote.md",
+    llnotes = "learning.md",
   }
-
-  for _, folder in ipairs(structure) do
-    vim.fn.mkdir(project_path .. "/" .. folder, "p")
-  end
-
-  local date = os.date("%d-%m-%Y")
-  local time = os.date("%H:%M:%S")
-  local function frontmatter(title, type)
-    return {
-      "---",
-      "title: " .. title,
-      "project: " .. project_name,
-      "type: " .. type,
-      "created: " .. date .. " " .. time,
-      "status: active",
-      "tags: [project," .. project_name .. "]",
-      "---",
-      "",
-    }
-  end
-
-  -- README.md
-  local readme_path = project_path .. "/README.md"
-  local readme = frontmatter("README", "readme")
-  table.insert(readme, "# " .. project_name)
-  table.insert(readme, "")
-  table.insert(readme, "> Auto-generated scaffold.")
-  vim.fn.writefile(readme, readme_path)
-
-  -- index.md
-  local index_path = project_path .. "/index.md"
-  local index = frontmatter("Project Index", "index")
-  vim.list_extend(index, {
-    "# 🧭 Project Index",
-    "",
-    "## 📌 Overview",
-    "- [[01-overview]]",
-    "",
-    "## 🧱 Infrastructure",
-    "- [[03-infrastructure]]",
-    "- [[06-network]]",
-    "- [[07-storage]]",
-    "",
-    "## 🛠 Platform",
-    "- [[04-platform]]",
-    "- [[05-software]]",
-    "",
-    "## 📘 Documentation",
-    "- [[09-docs]]",
-    "",
-    "## 🧠 Learning Notes",
-    "- [[brain-box/learning]]",
-    "",
-    "## 🔖 Tasks",
-    "- [[tasks]]",
-    "",
-  })
-  vim.fn.writefile(index, index_path)
-  vim.cmd("edit " .. index_path)
-  vim.cmd("Neotree reveal")
-  print("Project scaffold created: " .. project_name)
+  local template_file = templates_path .. "/" .. (template_map[folder] or "slnote.md")
+  create_note(vault .. "/" .. folder, template_file, folder)
 end
 
-local function add_project_task(project_name, task_desc, status)
-  status = status or "[ ]"
-  local project_path = brain_box_path .. "/projects/" .. project_name
-  if vim.fn.isdirectory(project_path) == 0 then
-    return print("❌ Project '" .. project_name .. "' does NOT exist.")
-  end
-  local tasks_path = project_path .. "/tasks.md"
-  if vim.fn.filereadable(tasks_path) == 0 then
-    vim.fn.writefile({ "# 📌 Project Task Log", "", "## Entries", "" }, tasks_path)
-  end
-  local timestamp = os.date("%Y-%m-%d %H:%M")
-  vim.fn.writefile({ string.format("- %s %s %s", timestamp, status, task_desc) }, tasks_path, "a")
-  vim.cmd("edit " .. tasks_path)
-end
-
-function _G.add_project_task_prompt()
-  local projects_path = brain_box_path .. "/projects"
-  local projects = {}
-  for name in io.popen('ls -1 "' .. projects_path .. '"'):lines() do
-    if vim.fn.isdirectory(projects_path .. "/" .. name) == 1 then
-      table.insert(projects, name)
-    end
-  end
-
-  print("Available projects:")
-  for _, p in ipairs(projects) do
-    print(" - " .. p)
-  end
-  local project = vim.fn.input("Project name: ")
-  local valid = false
-  for _, p in ipairs(projects) do
-    if p == project then
-      valid = true
-    end
-  end
-  if not valid then
-    return print("❌ Invalid project")
-  end
-
-  local task = vim.fn.input("Task description: ")
-  if task == "" then
-    return print("❌ No task entered")
-  end
-  add_project_task(project, task)
-end
-
--- =========================================
--- 🌐 Browser Utility
--- =========================================
+-- Open URL under cursor in browser
 local function open_link_in_browser()
   local word = vim.fn.expand("<cWORD>")
   local url = word:match("(https?://[%w%-%._~:/%?#@!$&'()*+,;%%]+)")
   if not url then
-    return print("⚠️ No valid URL under cursor.")
+    return print("⚠️ No valid URL under cursor")
   end
   os.execute("open " .. url)
-  print("🌐 Opening in browser: " .. url)
 end
 
--- =========================================
--- 🗂 Leader-o / Which-Key Subdomains
--- =========================================
-local wk_ok, which_key = pcall(require, "which-key")
-if wk_ok then
-  which_key.add({
-    -- Main Brain-Box
-    { "<leader>o", group = "Brain-Box / Obsidian", mode = "n" },
+-- =========================
+-- 🗂 Leader Key Domains (A1 Nested)
+-- =========================
+which_key.add({
+  ["<leader>"] = {
 
-    -- NEW (n)
-    { "<leader>on", group = "New", mode = "n" },
-    { "<leader>onn", "<cmd>ObsidianNew<CR>", desc = "New Note" },
-    { "<leader>ond", "<cmd>ObsidianToday<CR>", desc = "Daily Note" },
-    { "<leader>ony", "<cmd>ObsidianYesterday<CR>", desc = "Yesterday Note" },
-    { "<leader>onL", "<cmd>e " .. brain_box_path .. "/llnotes<CR>", desc = "Open llnotes" },
-    { "<leader>onP", create_new_project_scaffold, desc = "New Project Scaffold" },
-    { "<leader>ont", create_learning_note, desc = "New Learning Note" },
-    { "<leader>onc", create_cheatsheet, desc = "New Cheatsheet" },
-    { "<leader>ons", create_snippet, desc = "New Code Snippet" },
+    -- =================
+    -- Obsidian / Notes (o)
+    -- =================
+    o = {
+      name = "Obsidian",
 
-    -- ADD (a)
-    { "<leader>oa", group = "Add", mode = "n" },
-    { "<leader>oat", _G.add_project_task_prompt, desc = "Add Project Task" },
+      -- New notes
+      n = {
+        name = "New",
+        n = { "<cmd>ObsidianNew<CR>", "New Note" },
+        d = { "<cmd>ObsidianToday<CR>", "Daily Note" },
+        y = { "<cmd>ObsidianYesterday<CR>", "Yesterday Note" },
+        L = { "<cmd>e " .. brain_box_path .. "/llnotes<CR>", "Open llnotes" },
+        P = { create_learning_note, "New Learning Note" },
+        t = { create_learning_note, "New Learning Note" },
+        c = { create_cheatsheet, "New Cheatsheet" },
+        s = { create_snippet, "New Code Snippet" },
+      },
 
-    -- LINKING (l)
-    { "<leader>ol", group = "Linking", mode = "n" },
-    { "<leader>oll", "<cmd>ObsidianLink<CR>", desc = "Link Note" },
+      -- Linking
+      l = {
+        name = "Links",
+        f = { follow_or_create_obsidian_link_smart, "Follow/Create Link (smart)" },
+        b = { open_link_in_browser, "Open Link in Browser" },
+        l = { "<cmd>ObsidianLink<CR>", "Link Note" },
+      },
 
-    -- TEMPLATES (t)
-    { "<leader>ot", group = "Templates", mode = "n" },
-    { "<leader>otd", "<cmd>e " .. brain_box_path .. "/_templates/daily.md<CR>", desc = "Open daily template" },
-    { "<leader>ots", "<cmd>e " .. brain_box_path .. "/_templates/slnote.md<CR>", desc = "Open slnote template" },
-    {
-      "<leader>otc",
-      "<cmd>e " .. brain_box_path .. "/_templates/cheatsheet.md<CR>",
-      desc = "Open cheatsheet template",
+      -- Search & open
+      s = { "<cmd>ObsidianSearch<CR>", "Search Vault" },
+      o = { "<cmd>e " .. brain_box_path .. "<CR>", "Open Brain-Box Root" },
     },
 
-    -- SEARCH (s)
-    { "<leader>os", "<cmd>ObsidianSearch<CR>", desc = "Search Vault", mode = "n" },
+    -- =================
+    -- Files (f)
+    -- =================
+    f = {
+      name = "Files",
+      f = { "<cmd>Telescope find_files<CR>", "Find Files" },
+      g = { "<cmd>Telescope live_grep<CR>", "Live Grep" },
+      b = { "<cmd>Telescope buffers<CR>", "Buffers" },
+      h = { "<cmd>Telescope help_tags<CR>", "Help Tags" },
+      w = { "<cmd>w<CR>", "Write File" },
+    },
 
-    -- OPEN ROOT (o)
-    { "<leader>oo", "<cmd>e " .. brain_box_path .. "<CR>", desc = "Open Brain-Box Root", mode = "n" },
+    -- =================
+    -- Windows / Splits (w)
+    -- =================
+    w = {
+      name = "Windows",
+      s = { "<C-w>v", "Split Vertical" },
+      h = { "<C-w>s", "Split Horizontal" },
+      e = { "<C-w>=", "Equalize Splits" },
+      x = { ":close<CR>", "Close Split" },
+    },
 
-    -- BROWSER (b)
-    { "<leader>ob", open_link_in_browser, desc = "Open Link in Browser", mode = "n" },
-  })
-end
+    -- =================
+    -- Buffers (b)
+    -- =================
+    b = {
+      name = "Buffers",
+      n = { ":bnext<CR>", "Next Buffer" },
+      p = { ":bprevious<CR>", "Previous Buffer" },
+      d = { ":bdelete<CR>", "Delete Buffer" },
+    },
+
+    -- =================
+    -- Telescope / Search (s)
+    -- =================
+    s = {
+      name = "Search",
+      f = { "<cmd>Telescope find_files<CR>", "Find Files" },
+      g = { "<cmd>Telescope live_grep<CR>", "Live Grep" },
+      b = { "<cmd>Telescope buffers<CR>", "Buffers" },
+      h = { "<cmd>Telescope help_tags<CR>", "Help Tags" },
+    },
+
+    -- =================
+    -- Git (g) - placeholder
+    -- =================
+    g = {
+      name = "Git",
+      s = { "<cmd>echo 'No git plugin installed'<CR>", "Status" },
+      d = { "<cmd>echo 'No git plugin installed'<CR>", "Diff" },
+    },
+
+    -- =================
+    -- Templates / Tools (t)
+    -- =================
+    t = {
+      name = "Templates",
+      d = { "<cmd>e " .. templates_path .. "/daily.md<CR>", "Daily Template" },
+      s = { "<cmd>e " .. templates_path .. "/slnote.md<CR>", "SLNote Template" },
+      c = { "<cmd>e " .. templates_path .. "/cheatsheet.md<CR>", "Cheatsheet Template" },
+    },
+
+    -- =================
+    -- Config / Dotfiles (c)
+    -- =================
+    c = {
+      name = "Config",
+      v = { "<cmd>e ~/.config/nvim/init.lua<CR>", "Init.lua" },
+      l = { "<cmd>e ~/.config/nvim/lua/config/lazy.lua<CR>", "Lazy config" },
+      k = { "<cmd>e ~/.config/nvim/lua/config/keymaps.lua<CR>", "Keymaps" },
+      t = { "<cmd>e ~/.config/nvim/lua/plugins/treesitter.lua<CR>", "Treesitter" },
+      z = { "<cmd>e ~/.zshrc<CR>", "Zsh config" },
+      tm = { "<cmd>e ~/.tmux.conf<CR>", "Tmux config" },
+      d = { "<cmd>Neotree ~/.dotfiles reveal<CR>", "Dotfiles folder" },
+    },
+
+    -- =================
+    -- Quit / Session (q)
+    -- =================
+    q = {
+      name = "Quit",
+      q = { ":qa<CR>", "Quit all" },
+      wq = { ":wq<CR>", "Write & Quit" },
+    },
+
+    -- =================
+    -- Misc / Terminal (m)
+    -- =================
+    m = {
+      name = "Misc",
+      tt = { ":ToggleTerm<CR>", "Toggle Terminal" },
+    },
+
+    -- =================
+    -- Help / Info (h)
+    -- =================
+    h = {
+      name = "Help",
+      ss = { ":StartupTime<CR>", "Startup Time" },
+    },
+  },
+})
