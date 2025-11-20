@@ -1,5 +1,5 @@
 -- =========================================
--- 🧠 Neovim Keymaps | Brain-Box
+--  Neovim Keymaps | Brain-Box
 -- =========================================
 
 -- Shorten function names
