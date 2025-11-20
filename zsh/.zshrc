@@ -180,6 +180,10 @@ alias vdfo='vim $HOME/.dotfiles/nvim/.config/nvim/lua/plugins'
 # Alias Brain-box
 alias bb='vim "$HOME/Google Drive/My Drive/brain-box"'
 
+# Alias Homelab
+alias hl='cd $HOME/Dev-prjs/homelab'
+alias vhl='vim "$HOME/Dev-prjs/homelab"'
+
 # Aliaces conig files
 alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'
 alias vdfv='vim $HOME/.dotfiles/vim/.vimrc'

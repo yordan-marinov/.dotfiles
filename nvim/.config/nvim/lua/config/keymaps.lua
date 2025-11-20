@@ -22,7 +22,7 @@ local templates_path = brain_box_path .. "/_templates"
 -- =========================================
 keymap("n", "<leader>so", ":source %<CR>", opts) -- source current file
 
-vim.keymap.set({ "i", "v" }, "jj", function()
+vim.keymap.set("i", "jj", function()
   -- In completion menu? then insert literal 'j'
   if vim.fn.pumvisible() == 1 then
     return "j"
@@ -192,6 +192,8 @@ which_key.add({
       b = { "<cmd>Telescope buffers<CR>", "Buffers" },
       h = { "<cmd>Telescope help_tags<CR>", "Help Tags" },
       s = { "<cmd>w<CR>", "Save File" },
+      x = { "<cmd>bdelete<CR>", "Close Buffer" },
+      X = { "<cmd>bd!<CR>", "Force Close Buffer" },
     },
 
     -- =================
