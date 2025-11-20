@@ -159,6 +159,26 @@ alias vi=nvim
 alias c='clear'
 alias pwdy="echo $(pwd) | pbcopy"
 catcp() { cat $1 | pbcopy }  # For Lunux install pbcopy with xclip (apt update && apt install xclip)
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+
+# Alias for .dotfiles
+alias dot='cd $HOME/.dotfiles && git pull'
+
+# Aliaces conig files
+alias vdot='vim $HOME/.dotfiles'
+alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'
+alias vdfv='vim $HOME/.dotfiles/vim/.vimrc'
+alias vdfz='vim $HOME/.dotfiles/zsh/.zshrc'
+alias vdfg='vim $HOME/.dotfiles/git/.gitconfig'
+alias vdfk='vim $HOME/.dotfiles/.config/kitty/kitty.conf'
+alias vdfo='vim $HOME/.dotfiles/nvim/.config/nvim/lua/plugins'
+
+# Alias Brain-box
+alias bb='vim "$HOME/Google Drive/My Drive/brain-box"'
 
 # Aliaces conig files
 alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'

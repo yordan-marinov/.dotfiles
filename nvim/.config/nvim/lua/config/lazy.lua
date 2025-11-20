@@ -1,12 +1,17 @@
+-- ============================================
+-- Lazy.nvim Bootstrap & Setup
+-- Author: YordanM 🧠 "Brain Box"
+-- ============================================
+
+-- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
-      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
-      { "\nPress any key to exit..." },
+      { "❌ Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { "Press any key to exit..." },
     }, true, {})
     vim.fn.getchar()
     os.exit(1)
@@ -14,43 +19,75 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- ============================================
+-- Lazy Setup Configuration
+-- ============================================
 require("lazy").setup({
   spec = {
-    -- add LazyVim and import its plugins
+    -- 🧩 Base LazyVim plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    -- import/override with your plugins
+
+    -- 🧠 Your personal plugin collection
     { import = "plugins" },
   },
+
   defaults = {
-    -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
-    -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
     lazy = false,
-    -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
-    -- have outdated releases, which may break your Neovim install.
-    version = false, -- always use the latest git commit
-    -- version = "*", -- try installing the latest stable version for plugins that support semver
+    version = false,
   },
-  -- install = { colorscheme = { "tokyonight", "habamax" } },
+
+  install = {
+    colorscheme = { "tokyonight", "catppuccin", "habamax" },
+  },
+
+  ui = {
+    border = "rounded",
+    size = { width = 0.9, height = 0.9 },
+    wrap = true,
+  },
+
   checker = {
-    enabled = true, -- check for plugin updates periodically
-    notify = false, -- notify on update
-  }, -- automatically check for plugin updates
+    enabled = true,
+    notify = false,
+    frequency = 3600,
+  },
+
+  change_detection = {
+    enabled = true,
+    notify = false,
+  },
+
   performance = {
+    cache = { enabled = true },
     rtp = {
-      -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        -- "matchit",
-        -- "matchparen",
-        -- "netrwPlugin",
         "tarPlugin",
         "tohtml",
-        -- "tutor",
         "zipPlugin",
+        "netrwPlugin",
+        "tutor",
       },
     },
   },
 })
 
--- Load custom autocmds from autocomds.lua
-require("config.autocmds")
+-- ============================================
+-- Load Custom Configs (autocmds, keymaps, options)
+-- ============================================
+local ok, _ = pcall(function()
+  require("config.autocmds")
+  require("config.keymaps")
+  require("config.options")
+end)
+
+if not ok then
+  vim.notify("⚠️ Failed to load some config modules", vim.log.levels.WARN)
+end
+
+-- ============================================
+-- Friendly Startup Message
+-- ============================================
+vim.schedule(function()
+  vim.notify("🚀 Brain Box ready, YordanM!", vim.log.levels.INFO, { title = "LazyVim" })
+end)
