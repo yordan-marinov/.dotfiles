@@ -22,7 +22,6 @@ local templates_path = brain_box_path .. "/_templates"
 -- =========================================
 keymap("n", "<leader>so", ":source %<CR>", opts) -- source current file
 
--- jj to escape (insert + visual) with zero delay
 vim.keymap.set({ "i", "v" }, "jj", function()
   -- In completion menu? then insert literal 'j'
   if vim.fn.pumvisible() == 1 then
