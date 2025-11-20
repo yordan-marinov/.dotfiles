@@ -20,11 +20,21 @@ local templates_path = brain_box_path .. "/_templates"
 -- =========================================
 -- 🪶 General Shortcuts
 -- =========================================
-keymap("n", "jj", "<Esc>", opts) -- exit insert mode
 keymap("n", "<leader>so", ":source %<CR>", opts) -- source current file
 
+-- jj to escape (insert + visual) with zero delay
+vim.keymap.set({ "i", "v" }, "jj", function()
+  -- In completion menu? then insert literal 'j'
+  if vim.fn.pumvisible() == 1 then
+    return "j"
+  end
+  return "<Esc>"
+end, { expr = true, noremap = true, silent = true })
+
+vim.keymap.set("n", "<leader>fs", "<cmd>w<CR>", { desc = "Save File" })
+
 -- =========================================
--- 🌲 Window / Split Management (w)
+-- 🌲 Window / plit Management (w)
 -- =========================================
 keymap("n", "<leader>ws", "<C-w>v", opts) -- vertical split
 keymap("n", "<leader>wh", "<C-w>s", opts) -- horizontal split
@@ -182,7 +192,7 @@ which_key.add({
       g = { "<cmd>Telescope live_grep<CR>", "Live Grep" },
       b = { "<cmd>Telescope buffers<CR>", "Buffers" },
       h = { "<cmd>Telescope help_tags<CR>", "Help Tags" },
-      w = { "<cmd>w<CR>", "Write File" },
+      s = { "<cmd>w<CR>", "Save File" },
     },
 
     -- =================
