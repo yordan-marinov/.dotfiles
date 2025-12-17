@@ -9,7 +9,7 @@ return {
   },
   config = function()
     require("obsidian").setup({
-      dir = "/Users/yordan/Google Drive/My Drive/brain-box",
+      dir = vim.fn.expand("$HOME/Google Drive/My Drive/brain-box"),
 
       notes_subdir = "slnotes",
       new_notes_location = "slnotes",
