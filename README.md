@@ -38,3 +38,20 @@ nano ~/.zshrc.local
 # Paste exports here:
 # export ACCOUNT_KEY="..."
 ```
+
+## 🏗️ Architecture: GNU Stow
+
+This repo uses GNU Stow to manage symlinks.
+    Each top-level folder is a "Package."
+    Running stow <folder> inside ~/.dotfiles creates a symlink in ~/ pointing back to the repo.
+    Example: ~/.zshrc -> ~/.dotfiles/zsh/.zshrc
+
+Common Commands:
+    Add new config: stow <folder_name>
+    Remove config: stow -D <folder_name>
+    Refresh links: stow -R <folder_name>
+
+## 🔒 Security Policy
+    Machine Secrets: Stored in ~/.zshrc.local (Gitignored).
+    SSH Keys: Never stored in this repository.
+
