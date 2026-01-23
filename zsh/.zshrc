@@ -203,6 +203,33 @@ alias gitu='git commit -m "Update $(date +%F)"'
 alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
 # alias gitc='aicommits' # requires aicommits installed (https://github.com/Nutlope/aicommits)
 
+# --- Kubernetes Aliases ---
+alias k='kubectl'
+alias kg='kubectl get'
+alias kgp='kubectl get pods'
+alias kga='kubectl get pods -A' # Get pods in All namespaces
+alias kd='kubectl describe'
+alias kl='kubectl logs -f'     # Follow logs
+alias ke='kubectl exec -it'    # Interactive exec
+alias ka='kubectl apply -f'
+alias kdel='kubectl delete'
+alias kctx='kubectl config use-context' # Change cluster context
+alias kns='kubectl config set-context --current --namespace' # Change current namespace
+
+# --- Talos OS Aliases ---
+alias t='talosctl'
+alias tn='talosctl -n' # Usage: tn 192.168.111.11 <command>
+alias td='talosctl dashboard -n'
+
+# --- ArgoCD Aliases ---
+alias argologin='kubectl port-forward svc/argocd-server -n argocd 8080:443'
+alias argosync='argocd app sync'
+
+# --- Enable kubectl completion for the 'k' alias ---
+if [ $commands[kubectl] ]; then
+  source <(kubectl completion zsh)
+  compdef __start_kubectl k
+fi
 
 # neofetch
 neofetch
