@@ -203,6 +203,32 @@ alias gitu='git commit -m "Update $(date +%F)"'
 alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
 # alias gitc='aicommits' # requires aicommits installed (https://github.com/Nutlope/aicommits)
 
+# --- Git Automation Functions ---
+
+# git full: Add ALL, Commit with custom message, and Push
+gf() {
+  # Check if a message was provided ($1 is the first argument)
+  if [ -z "$1" ]; then
+    echo "❌ Error: You must provide a commit message."
+    echo "Usage: gf \"your message here\""
+    return 1
+  fi
+
+  echo "🚀 Starting Git Full sync..."
+
+  # 1. Add all changes (including new files)
+  git add .
+
+  # 2. Commit with your provided message
+  git commit -m "$1"
+
+  # 3. Push to remote
+  git push
+
+  echo "✅ Done!"
+}
+
+
 # --- Kubernetes Aliases ---
 alias k='kubectl'
 alias kg='kubectl get'
