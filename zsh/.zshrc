@@ -72,11 +72,10 @@ COMPLETION_WAITING_DOTS="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-	git
-	zsh-autosuggestions
-	zsh-syntax-highlighting
+        git
+        zsh-autosuggestions
+        zsh-syntax-highlighting
 )
-
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -234,5 +233,31 @@ if command -v neofetch &> /dev/null; then
     neofetch
 fi
 
-# Empty line before new prompt
-precmd() { echo "" }
+
+# 1. This function runs every time a command finishes
+precmd() {
+  # Add a clean newline before the next prompt
+  echo ""
+
+  # Set cursor to Blinking Block (1)
+  printf '\e[1 q'
+
+  # Set cursor to a "Creamy Orange" (#ffbd69)
+  # This works perfectly in Kitty on both Mac and Linux
+  printf '\e]12;#ffbd69\a'
+}
+
+# 2. Configure Git status symbols (Matching your previous look)
+ZSH_THEME_GIT_PROMPT_PREFIX=""
+ZSH_THEME_GIT_PROMPT_SUFFIX=" "
+ZSH_THEME_GIT_PROMPT_DIRTY="%F{208}✗%f"
+ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}✔%f"
+
+# 3. The Master Prompt Definition
+# Line 1: user@host:path
+# Line 2: branch status $
+NEWLINE=$'\n'
+PROMPT='%F{green}%n@%m%f:%B%F{blue}%~%f%b${NEWLINE}%F{magenta}$(git_prompt_info)%f$ '
+
+# 4. Kitty-specific cursor settings (Backup for Linux)
+export TTY_CURSOR_COLOR="#ffa736"
