@@ -71,19 +71,10 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-        git
-        zsh-autosuggestions
-        zsh-syntax-highlighting
-)
-source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -104,28 +95,24 @@ export LANG=en_US.UTF-8
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-
 # --- 1. Environment Detection ---
-# We use a simple check that works even if brackets are finicky
 if [[ "$OSTYPE" == "darwin"* ]]; then
     IS_MAC=true
 else
     IS_MAC=false
 fi
 
-# --- 2. Oh My Zsh Initialization ---
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="agnoster"
-
-# Ensure plugins follow the OMZ standard
-plugins=(git aws python mvn kubectl terraform)
+# Standardized Plugins List
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting aws python mvn kubectl terraform)
 
 # Only source OMZ if it exists physically
 if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
     source "$ZSH/oh-my-zsh.sh"
 fi
 
-# --- 3. Path & Tooling (OS Specific) ---
+# --- 3. System Configuration ---
+export LANG=en_US.UTF-8
+
 if [[ "$IS_MAC" == "true" ]]; then
     # macOS Specifics
     [[ -f /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -169,6 +156,7 @@ alias vi='nvim'
 alias c='clear'
 alias t='tmux'
 alias lg='lazygit'
+alias python="python3"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -181,7 +169,6 @@ alias gitp='git push'
 alias gitq='git add . && git commit -m "Update $(date +%F)" && git push'
 
 # The "Git Full" Function (gf "message")
-# We unalias first to prevent the 'defining function based on alias' error
 unalias gf 2>/dev/null
 gf() {
   if [ -z "$1" ]; then
@@ -217,47 +204,36 @@ alias vdfg="nvim $HOME/.dotfiles/git/.gitconfig"
 alias vdfo="nvim $HOME/.dotfiles/nvim/.config/nvim/lua/plugins"
 
 # --- 9. Final Initializations ---
-# Load local secrets (Omni tokens, etc)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
-# Load FZF if exists
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 
-# Load Pyenv
 if command -v pyenv &> /dev/null; then
     eval "$(pyenv init -)"
 fi
 
-# Visuals
+# Visuals (Neofetch / iTerm integration)
 if command -v neofetch &> /dev/null; then
     neofetch
 fi
+[[ -f "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# --- 10. Prompt & Cursor (The "Craft" Layer) ---
 
-# 1. This function runs every time a command finishes
 precmd() {
-  # Add a clean newline before the next prompt
-  echo ""
-
-  # Set cursor to Blinking Block (1)
-  printf '\e[1 q'
-
-  # Set cursor to a "Creamy Orange" (#ffbd69)
-  # This works perfectly in Kitty on both Mac and Linux
-  printf '\e]12;#ffbd69\a'
+  echo "" # Newline before prompt
+  printf '\e[1 q' # Blinking Block Cursor
+  printf '\e]12;#ffbd69\a' # Orange Cursor
 }
 
-# 2. Configure Git status symbols (Matching your previous look)
+# Git Prompt Colors & Spacing
 ZSH_THEME_GIT_PROMPT_PREFIX=""
-ZSH_THEME_GIT_PROMPT_SUFFIX=" "
-ZSH_THEME_GIT_PROMPT_DIRTY="%F{208}✗%f"
-ZSH_THEME_GIT_PROMPT_CLEAN="%F{green}✔%f"
+ZSH_THEME_GIT_PROMPT_SUFFIX=""
+ZSH_THEME_GIT_PROMPT_DIRTY=" %F{#ff4336}✗%f"
+ZSH_THEME_GIT_PROMPT_CLEAN=" %F{#36ffa7}✔%f"
 
-# 3. The Master Prompt Definition
-# Line 1: user@host:path
-# Line 2: branch status $
+# Master Prompt Definition
 NEWLINE=$'\n'
-PROMPT='%F{green}%n@%m%f:%B%F{blue}%~%f%b${NEWLINE}%F{magenta}$(git_prompt_info)%f$ '
+PROMPT='%F{green}%n@%m%f:%B%F{blue}%~%f%b${NEWLINE}%F{magenta}$(git_prompt_info)%f $ '
 
-# 4. Kitty-specific cursor settings (Backup for Linux)
-export TTY_CURSOR_COLOR="#ffa736"
+# Backup cursor color
+export TTY_CURSOR_COLOR="#ffbd69"
