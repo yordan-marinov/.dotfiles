@@ -105,39 +105,54 @@ export LANG=en_US.UTF-8
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+
 # --- 1. Environment Detection ---
-IS_MAC=[[ "$OSTYPE" == "darwin"* ]] && true || false
+# We use a simple check that works even if brackets are finicky
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    IS_MAC=true
+else
+    IS_MAC=false
+fi
 
 # --- 2. Oh My Zsh Initialization ---
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="agnoster" # Or your preferred theme
+ZSH_THEME="agnoster"
 
+# Ensure plugins follow the OMZ standard
 plugins=(git aws python mvn kubectl terraform)
-source $ZSH/oh-my-zsh.sh
+
+# Only source OMZ if it exists physically
+if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
+    source "$ZSH/oh-my-zsh.sh"
+fi
 
 # --- 3. Path & Tooling (OS Specific) ---
-if $IS_MAC; then
+if [[ "$IS_MAC" == "true" ]]; then
     # macOS Specifics
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+    [[ -f /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
     export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-23.jdk/Contents/Home"
     alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
-
+    
     # Docker Desktop Completions
-    fpath=($HOME/.docker/completions $fpath)
-
-    # Compilation Flags for Mac
-    export CFLAGS="-I$(brew --prefix librdkafka)/include"
-    export LDFLAGS="-L$(brew --prefix librdkafka)/lib"
+    [[ -d $HOME/.docker/completions ]] && fpath=($HOME/.docker/completions $fpath)
+    
+    # Mac Clipboard
+    alias pwdy="echo -n \$(pwd) | pbcopy"
+    catcp() { cat $1 | pbcopy }
 else
     # Linux/Ubuntu Specifics
-    export PATH="$PATH:/usr/local/bin"
+    export PATH="/usr/local/bin:$PATH"
+    
+    # Ubuntu Clipboard (Requires xclip)
+    alias pwdy="echo -n \$(pwd) | xclip -selection clipboard"
+    catcp() { cat $1 | xclip -selection clipboard }
 fi
 
 # Universal Paths
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # --- 4. Brain-Box & Homelab (Stateless NAS Paths) ---
-if $IS_MAC; then
+if [[ "$IS_MAC" == "true" ]]; then
     export BRAINBOX_PATH="/Volumes/brainbox/vault"
 else
     export BRAINBOX_PATH="/mnt/brainbox/vault"
@@ -160,16 +175,6 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
-# Clipboard (Cross-platform)
-if $IS_MAC; then
-    alias pwdy="echo -n \$(pwd) | pbcopy"
-    catcp() { cat \$1 | pbcopy }
-else
-    # Requires 'xclip' installed on Ubuntu
-    alias pwdy="echo -n \$(pwd) | xclip -selection clipboard"
-    catcp() { cat \$1 | xclip -selection clipboard }
-fi
-
 # --- 6. GitOps & Git Automation ---
 alias gits='git status'
 alias gita='git add .'
@@ -177,6 +182,8 @@ alias gitp='git push'
 alias gitq='git add . && git commit -m "Update $(date +%F)" && git push'
 
 # The "Git Full" Function (gf "message")
+# We unalias first to prevent the 'defining function based on alias' error
+unalias gf 2>/dev/null
 gf() {
   if [ -z "$1" ]; then
     echo "❌ Error: Provide a commit message: gf \"message\""
@@ -211,7 +218,7 @@ alias vdfg="nvim $HOME/.dotfiles/git/.gitconfig"
 alias vdfo="nvim $HOME/.dotfiles/nvim/.config/nvim/lua/plugins"
 
 # --- 9. Final Initializations ---
-# Load local secrets (Omni tokens, etc) - This file stays on the NAS soul
+# Load local secrets (Omni tokens, etc)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 # Load FZF if exists
@@ -222,9 +229,7 @@ if command -v pyenv &> /dev/null; then
     eval "$(pyenv init -)"
 fi
 
-# Shell Integration & Visuals
-[[ -f "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
-
+# Visuals
 if command -v neofetch &> /dev/null; then
     neofetch
 fi
