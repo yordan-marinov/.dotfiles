@@ -221,19 +221,25 @@ fi
 
 precmd() {
   echo "" # Newline before prompt
-  printf '\e[1 q' # Blinking Block Cursor
-  printf '\e]12;#ffbd69\a' # Orange Cursor
+  # Set cursor to Blinking Block (1)
+  printf '\e[1 q'
+  # Set cursor to a Orange (#ffbd69)
+  printf '\e]12;#ffbd69\a'
 }
 
 # Git Prompt Colors & Spacing
 ZSH_THEME_GIT_PROMPT_PREFIX=""
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
-ZSH_THEME_GIT_PROMPT_DIRTY=" %F{#ff4336}✗%f"
-ZSH_THEME_GIT_PROMPT_CLEAN=" %F{#36ffa7}✔%f"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %F{#ff4336}✗%f" # Red
+ZSH_THEME_GIT_PROMPT_CLEAN=" %F{#36ffa7}✔%f" # Green
 
 # Master Prompt Definition
+# %n = User (#8febee)
+# %m = Host (#8feec3)
+# @  = At   (#baee8f)
+# %~ = Path (#8fbcef)
 NEWLINE=$'\n'
-PROMPT='%F{green}%n@%m%f:%B%F{blue}%~%f%b${NEWLINE}%F{magenta}$(git_prompt_info)%f $ '
+PROMPT='%F{#baee8f}%n%F{#baee8f}@%F{#baee8f}%m%f:%B%F{#8fbcef}%~%f%b${NEWLINE}%F{magenta}$(git_prompt_info)%f $ '
 
-# Backup cursor color
+# Backup cursor color for Kitty
 export TTY_CURSOR_COLOR="#ffbd69"
