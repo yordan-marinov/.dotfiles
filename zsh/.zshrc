@@ -132,17 +132,17 @@ if [[ "$IS_MAC" == "true" ]]; then
     [[ -f /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
     export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-23.jdk/Contents/Home"
     alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
-    
+
     # Docker Desktop Completions
     [[ -d $HOME/.docker/completions ]] && fpath=($HOME/.docker/completions $fpath)
-    
+
     # Mac Clipboard
     alias pwdy="echo -n \$(pwd) | pbcopy"
     catcp() { cat $1 | pbcopy }
 else
     # Linux/Ubuntu Specifics
     export PATH="/usr/local/bin:$PATH"
-    
+
     # Ubuntu Clipboard (Requires xclip)
     alias pwdy="echo -n \$(pwd) | xclip -selection clipboard"
     catcp() { cat $1 | xclip -selection clipboard }
