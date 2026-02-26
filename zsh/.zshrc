@@ -105,167 +105,129 @@ export LANG=en_US.UTF-8
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+# --- 1. Environment Detection ---
+IS_MAC=[[ "$OSTYPE" == "darwin"* ]] && true || false
 
-# Empty line before new propt
-precmd() {
-    precmd() {
-        echo
-    }
-}
-plugins=(git aws python mvn)
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-23.jdk/Contents/Home"
-#export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home"
+# --- 2. Oh My Zsh Initialization ---
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="agnoster" # Or your preferred theme
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# Python
-alias python="python3":
+plugins=(git aws python mvn kubectl terraform)
+source $ZSH/oh-my-zsh.sh
 
+# --- 3. Path & Tooling (OS Specific) ---
+if $IS_MAC; then
+    # macOS Specifics
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-23.jdk/Contents/Home"
+    alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
 
-# cpp compiler
-function cppcompile()
-{
-  filename=$1
-  re="^\#include \""
-  while read line
-  do
-    if [[ $line =~ $re ]]; then
-      temp=${line:9}
-      temp1=${temp#\"}
-      temp2=${temp1%\.*\"}
-      g++ -std=c++11 -c $temp2.cpp
-    fi
-  done < $filename.cpp
-  g++ -std=c++20 -c $filename.cpp
-  g++ -o $filename *.o
-  ./$filename
-  rm *.o
-}
+    # Docker Desktop Completions
+    fpath=($HOME/.docker/completions $fpath)
 
-# Created by `pipx` on 2024-06-20 09:32:19
-export PATH="$PATH:/Users/yordan/.local/bin"
-if [ -f "/Users/yordan/.config/fabric/fabric-bootstrap.inc" ]; then . "/Users/yordan/.config/fabric/fabric-bootstrap.inc"; fi
+    # Compilation Flags for Mac
+    export CFLAGS="-I$(brew --prefix librdkafka)/include"
+    export LDFLAGS="-L$(brew --prefix librdkafka)/lib"
+else
+    # Linux/Ubuntu Specifics
+    export PATH="$PATH:/usr/local/bin"
+fi
 
-export CFLAGS="-I$(brew --prefix librdkafka)/include"
-export LDFLAGS="-L$(brew --prefix librdkafka)/lib"
+# Universal Paths
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
-# Tmux
-alias t=tmux
+# --- 4. Brain-Box & Homelab (Stateless NAS Paths) ---
+if $IS_MAC; then
+    export BRAINBOX_PATH="/Volumes/brainbox/vault"
+else
+    export BRAINBOX_PATH="/mnt/brainbox/vault"
+fi
 
-# Aliaces
-alias v=nvim
-alias vim=nvim
-alias vi=nvim
+# Aliases using the abstracted paths
+alias bb="cd $BRAINBOX_PATH && nvim ."
+alias hl="cd $HOME/homelab"
+alias vhl="nvim $HOME/homelab"
+
+# --- 5. General Aliases ---
+alias v='nvim'
+alias vim='nvim'
+alias vi='nvim'
 alias c='clear'
-alias pwdy="echo $(pwd) | pbcopy"
-catcp() { cat $1 | pbcopy }  # For Lunux install pbcopy with xclip (apt update && apt install xclip)
+alias t='tmux'
+alias lg='lazygit'
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
-alias ......="cd ../../../../.."
 
-# Alias for .dotfiles
-alias dot='cd $HOME/.dotfiles && git pull'
+# Clipboard (Cross-platform)
+if $IS_MAC; then
+    alias pwdy="echo -n \$(pwd) | pbcopy"
+    catcp() { cat \$1 | pbcopy }
+else
+    # Requires 'xclip' installed on Ubuntu
+    alias pwdy="echo -n \$(pwd) | xclip -selection clipboard"
+    catcp() { cat \$1 | xclip -selection clipboard }
+fi
 
-# Aliaces conig files
-alias vdot='vim $HOME/.dotfiles'
-alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'
-alias vdfv='vim $HOME/.dotfiles/vim/.vimrc'
-alias vdfz='vim $HOME/.dotfiles/zsh/.zshrc'
-alias vdfg='vim $HOME/.dotfiles/git/.gitconfig'
-alias vdfk='vim $HOME/.dotfiles/.config/kitty/kitty.conf'
-alias vdfo='vim $HOME/.dotfiles/nvim/.config/nvim/lua/plugins'
-
-# Alias Brain-box
-alias bb='vim "$HOME/Google Drive/My Drive/brain-box"'
-
-# Alias Homelab
-alias hl='cd $HOME/Dev-prjs/homelab'
-alias vhl='vim "$HOME/Dev-prjs/homelab"'
-
-# Aliaces conig files
-alias vdft='vim $HOME/.dotfiles/tmux/.tmux.conf'
-alias vdfv='vim $HOME/.dotfiles/vim/.vimrc'
-alias vdfz='vim $home/.dotfiles/zsh/.zshrc'
-alias vdfg='vim $HOME/.dotfiles/git/.gitconfig'
-alias vdfk='vim $HOME/.dotfiles/kitty/kitty.conf'
-
-## Lazygit
-alias lg=lazygit
-
-## Git
+# --- 6. GitOps & Git Automation ---
 alias gits='git status'
-alias gita='git add -u'
-gitm() { git commit -m "$1" }
+alias gita='git add .'
 alias gitp='git push'
-alias gitu='git commit -m "Update $(date +%F)"'
-alias gitq='git add -u && git commit -m "Update $(date +%F)" && git push'
-# alias gitc='aicommits' # requires aicommits installed (https://github.com/Nutlope/aicommits)
+alias gitq='git add . && git commit -m "Update $(date +%F)" && git push'
 
-# --- Git Automation Functions ---
-
-# git full: Add ALL, Commit with custom message, and Push
+# The "Git Full" Function (gf "message")
 gf() {
-  # Check if a message was provided ($1 is the first argument)
   if [ -z "$1" ]; then
-    echo "❌ Error: You must provide a commit message."
-    echo "Usage: gf \"your message here\""
+    echo "❌ Error: Provide a commit message: gf \"message\""
     return 1
   fi
-
-  echo "🚀 Starting Git Full sync..."
-
-  # 1. Add all changes (including new files)
-  git add .
-
-  # 2. Commit with your provided message
-  git commit -m "$1"
-
-  # 3. Push to remote
-  git push
-
-  echo "✅ Done!"
+  git add . && git commit -m "$1" && git push
 }
 
-
-# --- Kubernetes Aliases ---
+# --- 7. Kubernetes & Cluster Management ---
 alias k='kubectl'
 alias kg='kubectl get'
 alias kgp='kubectl get pods'
-alias kga='kubectl get pods -A' # Get pods in All namespaces
+alias kga='kubectl get pods -A'
 alias kd='kubectl describe'
-alias kl='kubectl logs -f'     # Follow logs
-alias ke='kubectl exec -it'    # Interactive exec
+alias kl='kubectl logs -f'
+alias ke='kubectl exec -it'
 alias ka='kubectl apply -f'
 alias kdel='kubectl delete'
-alias kctx='kubectl config use-context' # Change cluster context
-alias kns='kubectl config set-context --current --namespace' # Change current namespace
+alias kns='kubectl config set-context --current --namespace'
 
-# --- Talos OS Aliases ---
+# Talos & Argo
 alias t='talosctl'
-alias tn='talosctl -n' # Usage: tn 192.168.111.11 <command>
+alias tn='talosctl -n'
 alias td='talosctl dashboard -n'
-
-# --- ArgoCD Aliases ---
 alias argologin='kubectl port-forward svc/argocd-server -n argocd 8080:443'
-alias argosync='argocd app sync'
 
-# --- Enable kubectl completion for the 'k' alias ---
-if [ $commands[kubectl] ]; then
-  source <(kubectl completion zsh)
-  compdef __start_kubectl k
+# --- 8. Dotfiles Management ---
+alias dot="cd $HOME/.dotfiles && git pull && stow zsh tmux nvim"
+alias vdfz="nvim $HOME/.dotfiles/zsh/.zshrc"
+alias vdft="nvim $HOME/.dotfiles/tmux/.tmux.conf"
+alias vdfg="nvim $HOME/.dotfiles/git/.gitconfig"
+alias vdfo="nvim $HOME/.dotfiles/nvim/.config/nvim/lua/plugins"
+
+# --- 9. Final Initializations ---
+# Load local secrets (Omni tokens, etc) - This file stays on the NAS soul
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Load FZF if exists
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+
+# Load Pyenv
+if command -v pyenv &> /dev/null; then
+    eval "$(pyenv init -)"
 fi
 
-# neofetch
-neofetch
-export PATH="$HOME/bin:$PATH"# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=(/Users/yordan/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-# End of Docker CLI completions
+# Shell Integration & Visuals
+[[ -f "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
 
-eval "$(pyenv init -)"
+if command -v neofetch &> /dev/null; then
+    neofetch
+fi
 
-alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
-
+# Empty line before new prompt
+precmd() { echo "" }
