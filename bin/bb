@@ -1,11 +1,18 @@
 #!/bin/bash
 
-# Define the brain-box directory
-brain_box_dir="$HOME/Google Drive/My Drive/brain-box"
+# Detect OS to find the correct mount path
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS SMB Path
+    brain_box_dir="/Volumes/brainbox/vault"
+else
+    # Linux NFS Path
+    brain_box_dir="/mnt/brainbox/vault"
+fi
 
 # Change to the directory
 cd "$brain_box_dir" || {
-    echo "Error: Could not access brain-box directory."
+    echo "❌ Error: Could not access brain-box directory at $brain_box_dir"
+    echo "Check if the NAS is mounted!"
     exit 1
 }
 
