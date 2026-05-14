@@ -146,6 +146,7 @@ fi
 
 # Aliases using the abstracted paths
 alias bb="cd $BRAINBOX_PATH && nvim ."
+alias wb="d $BRAINBOX_PATH && ls -la"
 alias hl="cd $HOME/homelab"
 alias vhl="nvim $HOME/homelab"
 
@@ -243,3 +244,9 @@ PROMPT='%F{#baee8f}%n%F{#baee8f}@%F{#baee8f}%m%f:%B%F{#8fbcef}%~%f%b${NEWLINE}%F
 
 # Backup cursor color for Kitty
 export TTY_CURSOR_COLOR="#ffbd69"
+
+
+# Mac-style clipboard aliases
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+
