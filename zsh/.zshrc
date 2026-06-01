@@ -244,9 +244,13 @@ PROMPT='%F{#baee8f}%n%F{#baee8f}@%F{#baee8f}%m%f:%B%F{#8fbcef}%~%f%b${NEWLINE}%F
 
 # Backup cursor color for Kitty
 export TTY_CURSOR_COLOR="#ffbd69"
+<<<<<<< Updated upstream
 
 
 # Mac-style clipboard aliases
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
+=======
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+>>>>>>> Stashed changes
