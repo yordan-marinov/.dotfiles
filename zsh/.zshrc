@@ -146,6 +146,10 @@ fi
 
 # Aliases using the abstracted paths
 alias bb="cd $BRAINBOX_PATH && nvim ."
+
+alias bbs="$HOME/automations/bin/brainbox-sync.sh"
+alias bbst="$HOME/automations/bin/brainbox-status.sh"
+alias bbp="$HOME/automations/bin/brainbox-pull.sh"
 alias wb="d $BRAINBOX_PATH && ls -la"
 alias hl="cd $HOME/homelab"
 alias vhl="nvim $HOME/homelab"
@@ -244,13 +248,12 @@ PROMPT='%F{#baee8f}%n%F{#baee8f}@%F{#baee8f}%m%f:%B%F{#8fbcef}%~%f%b${NEWLINE}%F
 
 # Backup cursor color for Kitty
 export TTY_CURSOR_COLOR="#ffbd69"
-<<<<<<< Updated upstream
 
+# Pi
+export PATH="/home/labadmin/.local/share/pi-node/node-v22.22.3-linux-x64/bin:$PATH"
 
 # Mac-style clipboard aliases
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
-=======
 export JAVA_HOME=$(/usr/libexec/java_home -v 21)
->>>>>>> Stashed changes
