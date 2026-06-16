@@ -252,8 +252,12 @@ export TTY_CURSOR_COLOR="#ffbd69"
 # Pi
 export PATH="/home/labadmin/.local/share/pi-node/node-v22.22.3-linux-x64/bin:$PATH"
 
-# Mac-style clipboard aliases
-alias pbcopy='xclip -selection clipboard'
-alias pbpaste='xclip -selection clipboard -o'
+# Mac-style clipboard aliases on Linux
+if [[ "$IS_MAC" != "true" ]]; then
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+fi
 
-export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+if [[ "$IS_MAC" == "true" ]]; then
+    export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+fi
