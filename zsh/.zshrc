@@ -182,6 +182,7 @@ alias vim='nvim'
 alias vi='nvim'
 alias c='clear'
 alias t='tmux'
+alias h='herdr'
 alias lg='lazygit'
 alias python="python3"
 alias ..="cd .."
@@ -218,7 +219,7 @@ alias kdel='kubectl delete'
 alias kns='kubectl config set-context --current --namespace'
 
 # Talos & Argo
-alias t='talosctl'
+alias tal='talosctl'
 alias tn='talosctl -n'
 alias td='talosctl dashboard -n'
 alias argologin='kubectl port-forward svc/argocd-server -n argocd 8080:443'

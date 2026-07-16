@@ -31,6 +31,11 @@ It keeps the same command surface where practical, including existing aliases, a
 - `pi`
 - `herdr`
 
+Notable shared shortcuts include:
+- `t` → `tmux`
+- `h` → `herdr`
+- `tal` → `talosctl`
+
 ## Local setup example
 ```bash
 git clone git@github.com:yordan-marinov/.dotfiles.git ~/.dotfiles
