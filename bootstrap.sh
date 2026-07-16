@@ -1,64 +1,174 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-# --- Configuration ---
-# You can change these if you ever move your repo
-REPO_URL="https://github.com/your-username/your-dotfiles-repo.git"
-DOTFILES_DIR="$HOME/.dotfiles"
+REPO_URL="${DOTFILES_REPO_URL:-git@github.com:yordan-marinov/.dotfiles.git}"
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/.dotfiles}"
+BACKUP_SUFFIX="$(date +%Y%m%d-%H%M%S)"
 
-echo "🧱 Starting Fresh Machine Bootstrap..."
+log() {
+  printf '%s\n' "$1"
+}
 
-# 1. Install System Prerequisites
-echo "📦 Installing Git, Stow, Curl, and Zsh..."
-sudo apt update
-sudo apt install -y git stow curl zsh tmux neovim build-essential
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
 
-# 2. Clone the repo if it doesn't exist
-if [ ! -d "$DOTFILES_DIR" ]; then
-    echo "📂 Cloning dotfiles repository..."
-    git clone "$REPO_URL" "$DOTFILES_DIR"
-fi
+path_is_symlink_to() {
+  local path="$1"
+  local expected_prefix="$2"
+  [[ -L "$path" ]] || return 1
+  local resolved
+  resolved="$(python3 - "$path" <<'PY'
+import os, sys
+print(os.path.realpath(sys.argv[1]))
+PY
+)"
+  [[ "$resolved" == "$expected_prefix"* ]]
+}
 
-# 3. Install Oh My Zsh (Unattended)
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "🐚 Installing Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-fi
+backup_if_conflicting() {
+  local path="$1"
+  [[ -e "$path" || -L "$path" ]] || return 0
+  if path_is_symlink_to "$path" "$DOTFILES_DIR/"; then
+    return 0
+  fi
+  local backup_path="${path}.pre-dotfiles-${BACKUP_SUFFIX}"
+  log "📦 Backing up $path -> $backup_path"
+  mv "$path" "$backup_path"
+}
 
-# 4. Clean up default Ubuntu files that conflict with Stow
-# On a fresh install, Ubuntu creates .bashrc and .profile by default
-echo "🧹 Removing default config files to prevent Stow conflicts..."
-rm -f "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.bash_logout"
+install_linux_packages() {
+  log '📦 Installing Linux dependencies...'
+  sudo apt update
+  sudo apt install -y \
+    build-essential cargo cifs-utils curl fd-find fontconfig git neovim \
+    python3-pip python3-venv ripgrep stow tmux unzip xclip zsh
+}
 
-# 5. Run GNU Stow
-echo "🔗 Linking configurations..."
-cd "$DOTFILES_DIR"
+install_mac_packages() {
+  if ! command_exists brew; then
+    log '❌ Homebrew is required on macOS. Install Homebrew first: https://brew.sh'
+    exit 1
+  fi
 
-# List your specific folders in the repo
-modules=(zsh tmux git nvim kitty bin)
+  log '📦 Installing macOS dependencies...'
+  brew install git stow curl zsh tmux neovim ripgrep fd fzf lazygit rust
+  brew tap homebrew/cask-fonts >/dev/null 2>&1 || true
+  brew install --cask kitty font-jetbrains-mono-nerd-font
+}
 
-for module in "${modules[@]}"; do
-    if [ -d "$module" ]; then
-        echo "   -> Stowing $module"
-        # We run stow from inside the dotfiles folder to ensure relative links
-        stow -R -t "$HOME" "$module"
+install_oh_my_zsh() {
+  if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+    log '🐚 Installing Oh My Zsh...'
+    RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  fi
+}
+
+install_pi() {
+  if command_exists pi; then
+    return 0
+  fi
+
+  log '🤖 Installing pi...'
+  curl -fsSL https://pi.dev/install.sh | sh
+}
+
+install_herdr() {
+  if command_exists herdr; then
+    return 0
+  fi
+
+  if ! command_exists cargo; then
+    log '⚠️ cargo is not available; skipping herdr install.'
+    return 0
+  fi
+
+  log '🐑 Installing herdr via cargo...'
+  cargo install herdr
+}
+
+stow_modules() {
+  local modules=(zsh tmux git nvim kitty bin)
+  if [[ "$OSTYPE" != darwin* ]] && [[ -d "$DOTFILES_DIR/toshy" ]]; then
+    modules+=(toshy)
+  fi
+
+  log '🔗 Linking configurations...'
+  cd "$DOTFILES_DIR"
+  for module in "${modules[@]}"; do
+    if [[ -d "$module" ]]; then
+      log "   -> Stowing $module"
+      stow -R -t "$HOME" "$module"
     fi
-done
+  done
+}
 
-# 6. Create local secrets placeholder
-if [ ! -f "$HOME/.zshrc.local" ]; then
-    echo "🔐 Creating local secrets placeholder..."
-    cat <<EOF > "$HOME/.zshrc.local"
+prepare_conflicts() {
+  backup_if_conflicting "$HOME/.zshrc"
+  backup_if_conflicting "$HOME/.tmux.conf"
+  backup_if_conflicting "$HOME/.gitconfig"
+  backup_if_conflicting "$HOME/.gitignore_global"
+  backup_if_conflicting "$HOME/.config/nvim"
+  backup_if_conflicting "$HOME/.config/kitty"
+}
+
+create_linux_mount_points() {
+  [[ "$OSTYPE" == darwin* ]] && return 0
+  log '📂 Creating Linux mount points...'
+  sudo mkdir -p /mnt/brainbox /mnt/wbridge
+  sudo chown -R "$USER":"$USER" /mnt/brainbox /mnt/wbridge
+}
+
+create_local_override() {
+  if [[ -f "$HOME/.zshrc.local" ]]; then
+    return 0
+  fi
+
+  log '🔐 Creating local override placeholder...'
+  cat <<'EOF' > "$HOME/.zshrc.local"
 # Machine-specific overrides
-# export OMNI_ENDPOINT="..."
-# export OMNI_SERVICE_ACCOUNT_KEY="..."
+# export BRAINBOX_PATH="/mnt/brainbox/vault"
 EOF
-fi
+}
 
-# 7. Finalize: Change Shell to Zsh
-if [ "$SHELL" != "$(which zsh)" ]; then
-    echo "🔄 Changing default shell to Zsh..."
-    sudo chsh -s "$(which zsh)" "$USER"
-fi
+ensure_repo() {
+  if [[ -d "$DOTFILES_DIR/.git" ]]; then
+    return 0
+  fi
 
-echo "✅ DONE! Log out and back in to enter your new environment."
+  log '📂 Cloning dotfiles repository...'
+  git clone "$REPO_URL" "$DOTFILES_DIR"
+}
+
+main() {
+  log '🧱 Starting dotfiles bootstrap...'
+
+  case "$OSTYPE" in
+    darwin*) install_mac_packages ;;
+    linux-gnu*|linux*) install_linux_packages ;;
+    *)
+      log "❌ Unsupported platform: $OSTYPE"
+      exit 1
+      ;;
+  esac
+
+  ensure_repo
+  install_oh_my_zsh
+  prepare_conflicts
+  create_linux_mount_points
+  stow_modules
+  install_pi
+  install_herdr
+  create_local_override
+
+  chmod +x "$DOTFILES_DIR/bin/"* || true
+
+  if command_exists zsh && [[ "$SHELL" != "$(command -v zsh)" ]]; then
+    log '🔄 Changing default shell to zsh...'
+    chsh -s "$(command -v zsh)"
+  fi
+
+  log '✅ DONE! Restart your shell, then run pi and /login when needed.'
+}
+
+main "$@"

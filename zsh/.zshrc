@@ -98,9 +98,20 @@ COMPLETION_WAITING_DOTS="true"
 # --- 1. Environment Detection ---
 if [[ "$OSTYPE" == "darwin"* ]]; then
     IS_MAC=true
+    IS_LINUX=false
 else
     IS_MAC=false
+    IS_LINUX=true
 fi
+
+path_prepend() {
+    local dir="$1"
+    [[ -d "$dir" ]] || return 0
+    case ":$PATH:" in
+        *":$dir:"*) ;;
+        *) export PATH="$dir:$PATH" ;;
+    esac
+}
 
 # Standardized Plugins List
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting aws python mvn kubectl terraform)
@@ -113,44 +124,55 @@ fi
 # --- 3. System Configuration ---
 export LANG=en_US.UTF-8
 
+path_prepend "$HOME/bin"
+path_prepend "$HOME/.local/bin"
+path_prepend "$HOME/.cargo/bin"
+path_prepend "/usr/local/bin"
+path_prepend "/opt/homebrew/bin"
+path_prepend "/opt/homebrew/sbin"
+
+for pi_bin in "$HOME"/.local/share/pi-node/*/bin(N); do
+    path_prepend "$pi_bin"
+done
+
 if [[ "$IS_MAC" == "true" ]]; then
     # macOS Specifics
-    [[ -f /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
-    export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-23.jdk/Contents/Home"
-    alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
+    [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+    [[ -d /Library/Java/JavaVirtualMachines/jdk-23.jdk/Contents/Home ]] && export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-23.jdk/Contents/Home"
+    [[ -d /Applications/LibreOffice.app ]] && alias libreoffice='/Applications/LibreOffice.app/Contents/MacOS/soffice'
 
     # Docker Desktop Completions
     [[ -d $HOME/.docker/completions ]] && fpath=($HOME/.docker/completions $fpath)
 
-    # Mac Clipboard
-    alias pwdy="echo -n \$(pwd) | pbcopy"
-    catcp() { cat $1 | pbcopy }
+    alias pwdy='pwd | tr -d "\n" | pbcopy'
+    catcp() { cat "$1" | pbcopy }
 else
-    # Linux/Ubuntu Specifics
-    export PATH="/usr/local/bin:$PATH"
+    alias pwdy='pwd | tr -d "\n" | xclip -selection clipboard'
+    catcp() { cat "$1" | xclip -selection clipboard }
 
-    # Ubuntu Clipboard (Requires xclip)
-    alias pwdy="echo -n \$(pwd) | xclip -selection clipboard"
-    catcp() { cat $1 | xclip -selection clipboard }
+    if command -v xclip >/dev/null 2>&1; then
+        alias pbcopy='xclip -selection clipboard'
+        alias pbpaste='xclip -selection clipboard -o'
+    fi
+
+    if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
+        alias fd='fdfind'
+    fi
 fi
-
-# Universal Paths
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # --- 4. Brain-Box & Homelab (Stateless NAS Paths) ---
 if [[ "$IS_MAC" == "true" ]]; then
-    export BRAINBOX_PATH="/Volumes/brainbox/vault"
+    export BRAINBOX_PATH="${BRAINBOX_PATH:-/Volumes/brainbox/vault}"
 else
-    export BRAINBOX_PATH="/mnt/brainbox/vault"
+    export BRAINBOX_PATH="${BRAINBOX_PATH:-/mnt/brainbox/vault}"
 fi
 
-# Aliases using the abstracted paths
-alias bb="cd $BRAINBOX_PATH && nvim ."
-
+# Commands using the abstracted paths
+bb() { cd "$BRAINBOX_PATH" && nvim .; }
+wb() { cd "$BRAINBOX_PATH" && ls -la; }
 alias bbs="$HOME/automations/bin/brainbox-sync.sh"
 alias bbst="$HOME/automations/bin/brainbox-status.sh"
 alias bbp="$HOME/automations/bin/brainbox-pull.sh"
-alias wb="d $BRAINBOX_PATH && ls -la"
 alias hl="cd $HOME/homelab"
 alias vhl="nvim $HOME/homelab"
 
@@ -202,7 +224,7 @@ alias td='talosctl dashboard -n'
 alias argologin='kubectl port-forward svc/argocd-server -n argocd 8080:443'
 
 # --- 8. Dotfiles Management ---
-alias dot="cd $HOME/.dotfiles && git pull && stow zsh tmux nvim"
+alias dot="cd $HOME/.dotfiles && git pull --ff-only && stow -R zsh tmux git nvim kitty bin"
 alias vdfz="nvim $HOME/.dotfiles/zsh/.zshrc"
 alias vdft="nvim $HOME/.dotfiles/tmux/.tmux.conf"
 alias vdfg="nvim $HOME/.dotfiles/git/.gitconfig"
@@ -248,16 +270,3 @@ PROMPT='%F{#baee8f}%n%F{#baee8f}@%F{#baee8f}%m%f:%B%F{#8fbcef}%~%f%b${NEWLINE}%F
 
 # Backup cursor color for Kitty
 export TTY_CURSOR_COLOR="#ffbd69"
-
-# Pi
-export PATH="/home/labadmin/.local/share/pi-node/node-v22.22.3-linux-x64/bin:$PATH"
-
-# Mac-style clipboard aliases on Linux
-if [[ "$IS_MAC" != "true" ]]; then
-    alias pbcopy='xclip -selection clipboard'
-    alias pbpaste='xclip -selection clipboard -o'
-fi
-
-if [[ "$IS_MAC" == "true" ]]; then
-    export JAVA_HOME=$(/usr/libexec/java_home -v 21)
-fi
