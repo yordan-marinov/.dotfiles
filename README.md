@@ -21,6 +21,16 @@ This repository is not meant to be a product on its own; it exists as a lightwei
 ## Approach
 The repo uses GNU Stow-style organization so configuration can be linked into a home directory in a simple and maintainable way.
 
+## Tooling expectations
+The shared shell/bootstrap is intended to work across:
+- personal Linux machines
+- remote Linux workspaces
+- macOS laptops
+
+It keeps the same command surface where practical, including existing aliases, and bootstraps terminal-first agent tools such as:
+- `pi`
+- `herdr`
+
 ## Local setup example
 ```bash
 git clone git@github.com:yordan-marinov/.dotfiles.git ~/.dotfiles
