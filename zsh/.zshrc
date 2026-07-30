@@ -175,6 +175,7 @@ alias bbst="$HOME/automations/bin/brainbox-status.sh"
 alias bbp="$HOME/automations/bin/brainbox-pull.sh"
 alias hl="cd $HOME/homelab"
 alias vhl="nvim $HOME/homelab"
+alias vep="nvim ${HONCHO_EXECUTION_PLANE_REPO:-$HOME/platform/execution-plane}"
 
 # --- 5. General Aliases ---
 alias v='nvim'
@@ -185,6 +186,8 @@ alias t='tmux'
 alias h='herdr'
 alias lg='lazygit'
 alias python="python3"
+alias dopi='hpi'
+alias vhpi='vep'
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."

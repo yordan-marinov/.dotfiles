@@ -87,6 +87,45 @@ install_herdr() {
   cargo install herdr
 }
 
+configure_pi_packages() {
+  local settings_dir="$HOME/.pi/agent"
+  local settings_file="$settings_dir/settings.json"
+  local honcho_package="$DOTFILES_DIR/pi-honcho"
+
+  [[ -d "$honcho_package" ]] || return 0
+  mkdir -p "$settings_dir"
+
+  python3 - "$settings_file" "$honcho_package" <<'PY'
+import json
+import os
+import sys
+
+settings_file = sys.argv[1]
+honcho_package = os.path.abspath(sys.argv[2])
+
+if os.path.exists(settings_file):
+    with open(settings_file, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+else:
+    data = {}
+
+packages = data.get("packages")
+if not isinstance(packages, list):
+    packages = []
+
+if honcho_package not in packages:
+    packages.append(honcho_package)
+
+data["packages"] = packages
+
+with open(settings_file, "w", encoding="utf-8") as fh:
+    json.dump(data, fh, indent=2)
+    fh.write("\n")
+PY
+
+  log "🤖 Registered Pi package: $honcho_package"
+}
+
 stow_modules() {
   local modules=(zsh tmux git nvim kitty bin)
   if [[ "$OSTYPE" != darwin* ]] && [[ -d "$DOTFILES_DIR/toshy" ]]; then
@@ -128,6 +167,8 @@ create_local_override() {
   cat <<'EOF' > "$HOME/.zshrc.local"
 # Machine-specific overrides
 # export BRAINBOX_PATH="/mnt/brainbox/vault"
+# export HONCHO_EXECUTION_PLANE_REPO="$HOME/platform/execution-plane"
+# export HONCHO_PROFILE_FILE="$HOME/platform/execution-plane/profiles/yordan-homelab.profile"
 EOF
 }
 
@@ -158,6 +199,7 @@ main() {
   create_linux_mount_points
   stow_modules
   install_pi
+  configure_pi_packages
   install_herdr
   create_local_override
 
