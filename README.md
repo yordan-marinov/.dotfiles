@@ -25,7 +25,7 @@ The repo uses GNU Stow-style organization so configuration can be linked into a 
 The shared shell/bootstrap is intended to work across:
 - personal Linux machines
 - remote Linux workspaces
-- macOS laptops
+- macOS laptops, including Apple Silicon via Homebrew under `/opt/homebrew`
 
 It keeps the same command surface where practical, including existing aliases, and bootstraps terminal-first agent tools such as:
 - `pi`
@@ -45,6 +45,8 @@ git clone git@github.com:yordan-marinov/.dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./bootstrap.sh
 ```
+
+On a new Mac, install Homebrew first, then run the bootstrap. Machine-only paths and secrets belong in `~/.zshrc.local`; for example set `BRAINBOX_PATH` if your NAS/Google Drive vault is mounted somewhere other than `/Volumes/brainbox/vault`.
 
 ## Pi honcho integration
 The dotfiles repo now carries a local Pi package at `pi-honcho/`.

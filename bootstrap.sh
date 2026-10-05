@@ -62,6 +62,15 @@ install_oh_my_zsh() {
     log '🐚 Installing Oh My Zsh...'
     RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
   fi
+
+  local custom_plugins="$HOME/.oh-my-zsh/custom/plugins"
+  mkdir -p "$custom_plugins"
+  if [[ ! -d "$custom_plugins/zsh-autosuggestions" ]]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$custom_plugins/zsh-autosuggestions"
+  fi
+  if [[ ! -d "$custom_plugins/zsh-syntax-highlighting" ]]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$custom_plugins/zsh-syntax-highlighting"
+  fi
 }
 
 install_pi() {
@@ -159,14 +168,27 @@ create_linux_mount_points() {
 }
 
 create_local_override() {
+  if [[ -f "$HOME/.gitconfig.local" ]]; then
+    :
+  else
+    log '🔐 Creating git local override placeholder...'
+    cat <<'EOF' > "$HOME/.gitconfig.local"
+# Machine-specific Git identity overrides, if needed.
+# [user]
+#   email = you@example.com
+EOF
+  fi
+
   if [[ -f "$HOME/.zshrc.local" ]]; then
     return 0
   fi
 
-  log '🔐 Creating local override placeholder...'
+  log '🔐 Creating shell local override placeholder...'
   cat <<'EOF' > "$HOME/.zshrc.local"
 # Machine-specific overrides
-# export BRAINBOX_PATH="/mnt/brainbox/vault"
+# Linux default: /mnt/brainbox/vault
+# macOS default: /Volumes/brainbox/vault
+# export BRAINBOX_PATH="/Volumes/brainbox/vault"
 # export HONCHO_EXECUTION_PLANE_REPO="$HOME/platform/execution-plane"
 # export HONCHO_PROFILE_FILE="$HOME/platform/execution-plane/profiles/yordan-homelab.profile"
 EOF

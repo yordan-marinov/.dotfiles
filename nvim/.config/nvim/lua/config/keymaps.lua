@@ -13,7 +13,13 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 local home = os.getenv("HOME")
-local brain_box_path = home .. "/Google Drive/My Drive/brain-box"
+local function default_brainbox_path()
+  if vim.loop.os_uname().sysname == "Darwin" then
+    return "/Volumes/brainbox/vault"
+  end
+  return home .. "/Google Drive/My Drive/brain-box"
+end
+local brain_box_path = os.getenv("BRAINBOX_PATH") or default_brainbox_path()
 local templates_path = brain_box_path .. "/_templates"
 
 -- =========================================
@@ -205,7 +211,8 @@ local function open_link_in_browser()
   local word = vim.fn.expand("<cWORD>")
   local url = word:match("(https?://[%w%-%._~:/%?#@!$&'()*+,;%%]+)")
   if url then
-    os.execute("open " .. url)
+    local opener = vim.loop.os_uname().sysname == "Darwin" and "open" or "xdg-open"
+    os.execute(opener .. " " .. vim.fn.shellescape(url))
   end
 end
 

@@ -1,0 +1,11 @@
+# Runtime/editor state
+.DS_Store
+*.swp
+*.swo
+
+# Tmux plugins are bootstrapped by TPM, not tracked as nested repos.
+tmux/.tmux/plugins/*
+!tmux/.tmux/plugins/tpm/
+
+# Lazy.nvim manages plugin checkouts.
+nvim/.config/nvim/lua/plugins/*/

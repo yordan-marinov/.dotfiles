@@ -1,3 +1,6 @@
 [user]
 	email = y.marinov@yahoo.co.uk
 	name = yordan-marinov
+
+[include]
+	path = ~/.gitconfig.local

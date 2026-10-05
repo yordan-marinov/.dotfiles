@@ -163,8 +163,10 @@ fi
 # --- 4. Brain-Box & Homelab (Stateless NAS Paths) ---
 if [[ "$IS_MAC" == "true" ]]; then
     export BRAINBOX_PATH="${BRAINBOX_PATH:-/Volumes/brainbox/vault}"
+    export GOOGLE_DRIVE_PATH="${GOOGLE_DRIVE_PATH:-$HOME/Library/CloudStorage/GoogleDrive-$USER@gmail.com/My Drive}"
 else
     export BRAINBOX_PATH="${BRAINBOX_PATH:-/mnt/brainbox/vault}"
+    export GOOGLE_DRIVE_PATH="${GOOGLE_DRIVE_PATH:-$HOME/Google Drive/My Drive}"
 fi
 
 # Commands using the abstracted paths
@@ -229,6 +231,7 @@ alias argologin='kubectl port-forward svc/argocd-server -n argocd 8080:443'
 
 # --- 8. Dotfiles Management ---
 alias dot="cd $HOME/.dotfiles && git pull --ff-only && stow -R zsh tmux git nvim kitty bin"
+alias dotb="cd $HOME/.dotfiles && ./bootstrap.sh"
 alias vdfz="nvim $HOME/.dotfiles/zsh/.zshrc"
 alias vdft="nvim $HOME/.dotfiles/tmux/.tmux.conf"
 alias vdfg="nvim $HOME/.dotfiles/git/.gitconfig"

@@ -14,8 +14,14 @@ file_name=$(echo "$formatted_title" | tr ' ' '-')
 formatted_file_name="${file_name}.md"
 
 # Define paths
-note_dir="$HOME/Google Drive/My Drive/brain-box/slnotes"
-archive_dir="$HOME/Google Drive/My Drive/brain-box/llnotes" # Archive folder
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    default_brainbox="/Volumes/brainbox/vault"
+else
+    default_brainbox="$HOME/Google Drive/My Drive/brain-box"
+fi
+brainbox_dir="${BRAINBOX_PATH:-$default_brainbox}"
+note_dir="$brainbox_dir/slnotes"
+archive_dir="$brainbox_dir/llnotes" # Archive folder
 note_path="$note_dir/$formatted_file_name"
 archive_path="$archive_dir/$formatted_file_name"
 

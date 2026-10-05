@@ -8,8 +8,14 @@ return {
     "nvim-treesitter/nvim-treesitter",
   },
   config = function()
+    local function default_brainbox_path()
+      if vim.loop.os_uname().sysname == "Darwin" then
+        return "/Volumes/brainbox/vault"
+      end
+      return vim.fn.expand("$HOME/Google Drive/My Drive/brain-box")
+    end
     require("obsidian").setup({
-      dir = vim.fn.expand("$HOME/Google Drive/My Drive/brain-box"),
+      dir = os.getenv("BRAINBOX_PATH") or default_brainbox_path(),
 
       notes_subdir = "slnotes",
       new_notes_location = "slnotes",
