@@ -38,8 +38,13 @@ function defaultProfileFile(repoRoot: string, override?: string): string | undef
   if (override) return override;
   if (process.env.HONCHO_PROFILE_FILE) return process.env.HONCHO_PROFILE_FILE;
 
-  const candidate = path.join(repoRoot, "profiles", "yordan-homelab.profile");
-  return fs.existsSync(candidate) ? candidate : undefined;
+  const profilesDir = path.join(repoRoot, "profiles");
+  if (!fs.existsSync(profilesDir)) return undefined;
+
+  const candidates = fs.readdirSync(profilesDir)
+    .filter((name) => name.endsWith(".profile"))
+    .map((name) => path.join(profilesDir, name));
+  return candidates.length === 1 ? candidates[0] : undefined;
 }
 
 async function runHoncho(input: ToolInput, cwd: string, signal?: AbortSignal) {

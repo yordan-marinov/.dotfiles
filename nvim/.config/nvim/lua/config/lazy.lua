@@ -1,6 +1,6 @@
 -- ============================================
 -- Lazy.nvim Bootstrap & Setup
--- Author: YordanM 🧠 "Brain Box"
+-- Personal LazyVim bootstrap
 -- ============================================
 
 -- Bootstrap lazy.nvim
@@ -86,5 +86,5 @@ end
 -- Friendly Startup Message
 -- ============================================
 vim.schedule(function()
-  vim.notify("🚀 Brain Box ready, YordanM!", vim.log.levels.INFO, { title = "LazyVim" })
+  vim.notify("🚀 Neovim ready", vim.log.levels.INFO, { title = "LazyVim" })
 end)

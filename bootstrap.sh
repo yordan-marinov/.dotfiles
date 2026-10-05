@@ -190,7 +190,7 @@ EOF
 # macOS default: /Volumes/brainbox/vault
 # export BRAINBOX_PATH="/Volumes/brainbox/vault"
 # export HONCHO_EXECUTION_PLANE_REPO="$HOME/platform/execution-plane"
-# export HONCHO_PROFILE_FILE="$HOME/platform/execution-plane/profiles/yordan-homelab.profile"
+# export HONCHO_PROFILE_FILE="$HOME/platform/execution-plane/profiles/example.profile"
 EOF
 }
 

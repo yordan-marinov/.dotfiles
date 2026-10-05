@@ -163,7 +163,7 @@ fi
 # --- 4. Brain-Box & Homelab (Stateless NAS Paths) ---
 if [[ "$IS_MAC" == "true" ]]; then
     export BRAINBOX_PATH="${BRAINBOX_PATH:-/Volumes/brainbox/vault}"
-    export GOOGLE_DRIVE_PATH="${GOOGLE_DRIVE_PATH:-$HOME/Library/CloudStorage/GoogleDrive-$USER@gmail.com/My Drive}"
+    export GOOGLE_DRIVE_PATH="${GOOGLE_DRIVE_PATH:-$HOME/Library/CloudStorage}"
 else
     export BRAINBOX_PATH="${BRAINBOX_PATH:-/mnt/brainbox/vault}"
     export GOOGLE_DRIVE_PATH="${GOOGLE_DRIVE_PATH:-$HOME/Google Drive/My Drive}"
