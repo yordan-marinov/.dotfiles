@@ -27,17 +27,12 @@ The shared shell/bootstrap is intended to work across:
 - remote Linux workspaces
 - macOS laptops, including Apple Silicon via Homebrew under `/opt/homebrew`
 
-It keeps the same command surface where practical, including existing aliases, and bootstraps terminal-first agent tools such as:
-- `pi`
-- `herdr`
-- the local `pi-honcho` package for honcho adapter access
+It keeps the same command surface where practical, including existing aliases, and bootstraps terminal-first agent tooling via `omp` / oh-my-pi.
 
 Notable shared shortcuts include:
 - `t` → `tmux`
-- `h` → `herdr`
+- `h`, `p`, `pi` → `omp`
 - `tal` → `talosctl`
-- `dopi` → open `pi` in `${HONCHO_EXECUTION_PLANE_REPO:-~/platform/execution-plane}`
-- `vep` / `vhpi` → open the honcho execution-plane repo in `nvim`
 
 ## Local setup example
 ```bash
@@ -48,16 +43,14 @@ cd ~/.dotfiles
 
 On a new Mac, install Homebrew first, then run the bootstrap. Machine-only paths and secrets belong in `~/.zshrc.local`; Git identity belongs in `~/.gitconfig.local` so personal and work laptops do not share the same name/email.
 
-## Pi honcho integration
-The dotfiles repo now carries a local Pi package at `pi-honcho/`.
+## Agent tooling
+Bootstrap installs `omp` using the official installer:
 
-Bootstrap registers that package in `~/.pi/agent/settings.json`, so each trusted local Pi instance can load the honcho adapter extension automatically.
+```bash
+curl -fsSL https://omp.sh/install | sh
+```
 
-The extension adds:
-- `honcho_dispatch` tool — runs `scripts/interfaces/run-from-pi.sh`
-- `/honcho <request>` — manual command wrapper for the same adapter
-- `dopi` — shell shortcut that opens `pi` from the execution-plane checkout
-- env overrides via `HONCHO_EXECUTION_PLANE_REPO` and `HONCHO_PROFILE_FILE`
+This is the only coding-agent bootstrap managed by the dotfiles repo.
 
 ## Security note
 Machine-specific secrets should stay outside the repository in local-only files such as `~/.zshrc.local`.

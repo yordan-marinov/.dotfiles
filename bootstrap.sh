@@ -73,66 +73,13 @@ install_oh_my_zsh() {
   fi
 }
 
-install_pi() {
-  if command_exists pi; then
+install_omp() {
+  if command_exists omp; then
     return 0
   fi
 
-  log '🤖 Installing pi...'
-  curl -fsSL https://pi.dev/install.sh | sh
-}
-
-install_herdr() {
-  if command_exists herdr; then
-    return 0
-  fi
-
-  if ! command_exists cargo; then
-    log '⚠️ cargo is not available; skipping herdr install.'
-    return 0
-  fi
-
-  log '🐑 Installing herdr via cargo...'
-  cargo install herdr
-}
-
-configure_pi_packages() {
-  local settings_dir="$HOME/.pi/agent"
-  local settings_file="$settings_dir/settings.json"
-  local honcho_package="$DOTFILES_DIR/pi-honcho"
-
-  [[ -d "$honcho_package" ]] || return 0
-  mkdir -p "$settings_dir"
-
-  python3 - "$settings_file" "$honcho_package" <<'PY'
-import json
-import os
-import sys
-
-settings_file = sys.argv[1]
-honcho_package = os.path.abspath(sys.argv[2])
-
-if os.path.exists(settings_file):
-    with open(settings_file, "r", encoding="utf-8") as fh:
-        data = json.load(fh)
-else:
-    data = {}
-
-packages = data.get("packages")
-if not isinstance(packages, list):
-    packages = []
-
-if honcho_package not in packages:
-    packages.append(honcho_package)
-
-data["packages"] = packages
-
-with open(settings_file, "w", encoding="utf-8") as fh:
-    json.dump(data, fh, indent=2)
-    fh.write("\n")
-PY
-
-  log "🤖 Registered Pi package: $honcho_package"
+  log '🤖 Installing omp / oh-my-pi...'
+  curl -fsSL https://omp.sh/install | sh
 }
 
 stow_modules() {
@@ -189,8 +136,6 @@ EOF
 # Linux default: /mnt/brainbox/vault
 # macOS default: /Volumes/brainbox/vault
 # export BRAINBOX_PATH="/Volumes/brainbox/vault"
-# export HONCHO_EXECUTION_PLANE_REPO="$HOME/platform/execution-plane"
-# export HONCHO_PROFILE_FILE="$HOME/platform/execution-plane/profiles/example.profile"
 EOF
 }
 
@@ -220,9 +165,7 @@ main() {
   prepare_conflicts
   create_linux_mount_points
   stow_modules
-  install_pi
-  configure_pi_packages
-  install_herdr
+  install_omp
   create_local_override
 
   chmod +x "$DOTFILES_DIR/bin/"* || true
@@ -232,7 +175,7 @@ main() {
     chsh -s "$(command -v zsh)"
   fi
 
-  log '✅ DONE! Restart your shell, then run pi and /login when needed.'
+  log '✅ DONE! Restart your shell, then run omp when needed.'
 }
 
 main "$@"
