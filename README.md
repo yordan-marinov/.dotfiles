@@ -46,7 +46,7 @@ cd ~/.dotfiles
 ./bootstrap.sh
 ```
 
-On a new Mac, install Homebrew first, then run the bootstrap. Machine-only paths and secrets belong in `~/.zshrc.local`; for example set `BRAINBOX_PATH` if your NAS/Google Drive vault is mounted somewhere other than `/Volumes/brainbox/vault`.
+On a new Mac, install Homebrew first, then run the bootstrap. Machine-only paths and secrets belong in `~/.zshrc.local`; Git identity belongs in `~/.gitconfig.local` so personal and work laptops do not share the same name/email.
 
 ## Pi honcho integration
 The dotfiles repo now carries a local Pi package at `pi-honcho/`.

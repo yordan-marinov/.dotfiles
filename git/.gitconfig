@@ -1,6 +1,8 @@
-[user]
-	email = y.marinov@yahoo.co.uk
-	name = yordan-marinov
+# Shared Git defaults only.
+# Put machine/work-specific identity in ~/.gitconfig.local, for example:
+# [user]
+#   name = Your Name
+#   email = you@company.com
 
 [include]
 	path = ~/.gitconfig.local
