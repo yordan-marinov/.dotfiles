@@ -82,6 +82,20 @@ install_omp() {
   curl -fsSL https://omp.sh/install | sh
 }
 
+install_herdr() {
+  if command_exists herdr; then
+    return 0
+  fi
+
+  if ! command_exists cargo; then
+    log '⚠️ cargo is not available; skipping herdr install.'
+    return 0
+  fi
+
+  log '🐑 Installing herdr via cargo...'
+  cargo install herdr
+}
+
 stow_modules() {
   local modules=(zsh tmux git nvim kitty bin)
   if [[ "$OSTYPE" != darwin* ]] && [[ -d "$DOTFILES_DIR/toshy" ]]; then
@@ -166,6 +180,7 @@ main() {
   create_linux_mount_points
   stow_modules
   install_omp
+  install_herdr
   create_local_override
 
   chmod +x "$DOTFILES_DIR/bin/"* || true

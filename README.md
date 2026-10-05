@@ -27,11 +27,12 @@ The shared shell/bootstrap is intended to work across:
 - remote Linux workspaces
 - macOS laptops, including Apple Silicon via Homebrew under `/opt/homebrew`
 
-It keeps the same command surface where practical, including existing aliases, and bootstraps terminal-first agent tooling via `omp` / oh-my-pi.
+It keeps the same command surface where practical, including existing aliases, and bootstraps terminal-first agent tooling via `omp` / oh-my-pi plus `herdr` for terminal agent/session orchestration.
 
 Notable shared shortcuts include:
 - `t` → `tmux`
-- `h`, `p`, `pi` → `omp`
+- `h` → `herdr`
+- `p`, `pi` → `omp`
 - `tal` → `talosctl`
 
 ## Local setup example
@@ -50,7 +51,11 @@ Bootstrap installs `omp` using the official installer:
 curl -fsSL https://omp.sh/install | sh
 ```
 
-This is the only coding-agent bootstrap managed by the dotfiles repo.
+It also installs `herdr` via Cargo when Cargo is available:
+
+```bash
+cargo install herdr
+```
 
 ## Security note
 Machine-specific secrets should stay outside the repository in local-only files such as `~/.zshrc.local`.
