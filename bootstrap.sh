@@ -52,7 +52,7 @@ install_mac_packages() {
   fi
 
   log '📦 Installing macOS dependencies...'
-  brew install git stow curl zsh tmux neovim ripgrep fd fzf lazygit rust
+  brew install git stow curl zsh tmux neovim ripgrep fd fzf lazygit rust fastfetch
   brew tap homebrew/cask-fonts >/dev/null 2>&1 || true
   brew install --cask kitty font-jetbrains-mono-nerd-font
 }
@@ -87,13 +87,14 @@ install_herdr() {
     return 0
   fi
 
-  if ! command_exists cargo; then
-    log '⚠️ cargo is not available; skipping herdr install.'
-    return 0
+  # The crates.io "herdr" package is a stale 0.1.0; use Homebrew or the official installer.
+  if command_exists brew; then
+    log '🐑 Installing herdr via Homebrew...'
+    brew install herdr
+  else
+    log '🐑 Installing herdr via the official installer...'
+    curl -fsSL https://herdr.dev/install.sh | sh
   fi
-
-  log '🐑 Installing herdr via cargo...'
-  cargo install herdr
 }
 
 stow_modules() {

@@ -244,8 +244,10 @@ if command -v pyenv &> /dev/null; then
     eval "$(pyenv init -)"
 fi
 
-# Visuals (Neofetch / iTerm integration)
-if command -v neofetch &> /dev/null; then
+# Visuals (fastfetch, falling back to the archived neofetch / iTerm integration)
+if command -v fastfetch &> /dev/null; then
+    fastfetch
+elif command -v neofetch &> /dev/null; then
     neofetch
 fi
 [[ -f "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"

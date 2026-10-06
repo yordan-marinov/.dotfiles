@@ -51,10 +51,12 @@ Bootstrap installs `omp` using the official installer:
 curl -fsSL https://omp.sh/install | sh
 ```
 
-It also installs `herdr` via Cargo when Cargo is available:
+It also installs `herdr` with Homebrew, or with the official installer where Homebrew is not available:
 
 ```bash
-cargo install herdr
+brew install herdr
+# or
+curl -fsSL https://herdr.dev/install.sh | sh
 ```
 
 ## Security note
