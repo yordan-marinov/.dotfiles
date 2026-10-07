@@ -9,3 +9,6 @@ tmux/.tmux/plugins/*
 
 # Lazy.nvim manages plugin checkouts.
 nvim/.config/nvim/lua/plugins/*/
+
+__pycache__/
+*.pyc
