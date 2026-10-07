@@ -104,13 +104,7 @@ stow_modules() {
   fi
 
   log '🔗 Linking configurations...'
-  cd "$DOTFILES_DIR"
-  for module in "${modules[@]}"; do
-    if [[ -d "$module" ]]; then
-      log "   -> Stowing $module"
-      stow -R -t "$HOME" "$module"
-    fi
-  done
+  python3 "$DOTFILES_DIR/scripts/apply-dotfiles.py" --repo "$DOTFILES_DIR" --target "$HOME" "${modules[@]}"
 }
 
 prepare_conflicts() {

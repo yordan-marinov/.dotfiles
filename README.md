@@ -19,7 +19,7 @@ This repository is not meant to be a product on its own; it exists as a lightwei
 - `bootstrap.sh` — machine setup helper
 
 ## Approach
-The repo uses GNU Stow-style organization so configuration can be linked into a home directory in a simple and maintainable way.
+The repo uses GNU Stow-style organization so configuration can be linked into a home directory in a simple and maintainable way. If GNU Stow is not installed yet, `scripts/apply-dotfiles.py` provides a built-in symlink fallback.
 
 ## Tooling expectations
 The shared shell/bootstrap is intended to work across:

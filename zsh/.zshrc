@@ -229,7 +229,7 @@ alias td='talosctl dashboard -n'
 alias argologin='kubectl port-forward svc/argocd-server -n argocd 8080:443'
 
 # --- 8. Dotfiles Management ---
-alias dot="cd $HOME/.dotfiles && git pull --ff-only && stow -R zsh tmux git nvim kitty bin"
+alias dot="cd $HOME/.dotfiles && git pull --ff-only && python3 scripts/apply-dotfiles.py --repo $HOME/.dotfiles --target $HOME zsh tmux git nvim kitty bin"
 alias dotb="cd $HOME/.dotfiles && ./bootstrap.sh"
 alias vdfz="nvim $HOME/.dotfiles/zsh/.zshrc"
 alias vdft="nvim $HOME/.dotfiles/tmux/.tmux.conf"
