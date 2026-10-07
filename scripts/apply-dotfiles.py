@@ -47,6 +47,11 @@ def apply_fallback(repo: Path, target: Path, modules: list[str]) -> None:
             dst = target / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             if dst.exists() or dst.is_symlink():
+                try:
+                    if dst.resolve() == src.resolve():
+                        continue
+                except OSError:
+                    pass
                 if is_owned_link(dst, repo):
                     dst.unlink()
                 else:
