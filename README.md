@@ -15,8 +15,18 @@ This repository is not meant to be a product on its own; it exists as a lightwei
 - `zsh/` — shell configuration
 - `tmux/` — terminal multiplexer setup
 - `git/` — Git configuration
+- `nvim/` — Neovim (LazyVim) set up as an IDE; see [Neovim](#neovim)
 - `bin/` — small helper scripts
 - `bootstrap.sh` — machine setup helper
+
+## Neovim
+`vim`, `vi` and `v` all run `nvim`. LazyVim, plus language support for Python, shell, Markdown, YAML (GitLab CI schema included), Terraform/OpenTofu, Docker, SQL, TOML, JSON and Jinja templates (`*.sql.j2` / `*.yaml.j2` highlight as the language they render to), with debugging (`nvim-dap`) and a test runner (`neotest`).
+
+- Plugins are pinned in `nvim/.config/nvim/lazy-lock.json`. `:Lazy update` moves them; commit the lockfile so every machine follows.
+- `bootstrap.sh` runs `nvim --headless "+Lazy! restore" +IdeSync +qa`: plugins at the locked versions, then every LSP server, linter, formatter, debug adapter and treesitter parser, installed up front. Run `:IdeSync` again after adding a language.
+- Python resolves through the project's `.venv` (`uv sync`): pyright analyses against its interpreter, and ruff runs at the project's pinned version and `line-length`.
+- Format on save is on for Python (ruff) and Terraform (`tofu fmt`), off for Markdown, YAML and shell, where it would rewrite lines you didn't touch; `<leader>cf` formats on demand.
+- A repo whose `.tflint.hcl` declares plugins needs `tflint --init` once, or the tflint language server exits on start.
 
 ## Approach
 The repo uses GNU Stow-style organization so configuration can be linked into a home directory in a simple and maintainable way. If GNU Stow is not installed yet, `scripts/apply-dotfiles.py` provides a built-in symlink fallback.

@@ -69,3 +69,19 @@ vim.api.nvim_create_autocmd("BufNewFile", {
     vim.api.nvim_buf_set_lines(0, 0, -1, false, content)
   end,
 })
+
+-- =========================================
+-- No format-on-save where repos rarely run a formatter
+-- =========================================
+-- markdownlint-cli2 --fix, yamlls and shfmt would rewrite untouched lines of
+-- shared docs, CI files and scripts into an unrelated diff (yamlls reflowed
+-- 2.6k lines of one GitLab CI file; scripts in one repo mix indent styles).
+-- Python (ruff) and Terraform (tofu fmt) still format on save: repos that use
+-- them enforce them. <leader>cf formats on demand.
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("NoAutoformat", { clear = true }),
+  pattern = { "markdown", "yaml", "sh", "bash" },
+  callback = function()
+    vim.b.autoformat = false
+  end,
+})

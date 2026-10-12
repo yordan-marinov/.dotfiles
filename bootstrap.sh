@@ -40,9 +40,11 @@ backup_if_conflicting() {
 install_linux_packages() {
   log '📦 Installing Linux dependencies...'
   sudo apt update
+  # nodejs/npm and python3-venv: Mason installs most language servers and
+  # linters as npm or pip packages.
   sudo apt install -y \
     build-essential cargo cifs-utils curl fd-find fontconfig git neovim \
-    python3-pip python3-venv ripgrep stow tmux unzip xclip zsh
+    nodejs npm python3-pip python3-venv ripgrep stow tmux unzip xclip zsh
 }
 
 install_mac_packages() {
@@ -53,6 +55,10 @@ install_mac_packages() {
 
   log '📦 Installing macOS dependencies...'
   brew install git stow curl zsh tmux neovim ripgrep fd fzf lazygit rust fastfetch
+  # Editor toolchain: Mason's npm packages need node, its pip packages need a
+  # python3 >= 3.10 (macOS ships 3.9); uv builds the project .venv the Python
+  # setup resolves ruff and pyright's interpreter from; opentofu is `tofu fmt`.
+  brew install node python uv opentofu
   brew tap homebrew/cask-fonts >/dev/null 2>&1 || true
   brew install --cask kitty font-jetbrains-mono-nerd-font
 }
@@ -95,6 +101,17 @@ install_herdr() {
     log '🐑 Installing herdr via the official installer...'
     curl -fsSL https://herdr.dev/install.sh | sh
   fi
+}
+
+# Plugins at the lazy-lock.json versions, then every LSP server, linter,
+# formatter, debugger and treesitter parser the config lists (:IdeSync in
+# nvim/.config/nvim/lua/config/ide_sync.lua). Otherwise they install in the
+# background the first time a matching file is opened.
+sync_neovim() {
+  command_exists nvim || return 0
+  log '🧩 Installing Neovim plugins and language tooling...'
+  nvim --headless "+Lazy! restore" +IdeSync +qa ||
+    log '⚠️ Neovim tooling incomplete; open nvim and run :IdeSync to see what failed.'
 }
 
 stow_modules() {
@@ -176,6 +193,7 @@ main() {
   stow_modules
   install_omp
   install_herdr
+  sync_neovim
   create_local_override
 
   chmod +x "$DOTFILES_DIR/bin/"* || true

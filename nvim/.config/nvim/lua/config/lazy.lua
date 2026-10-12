@@ -18,6 +18,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 vim.opt.rtp:prepend(lazypath)
+require("config.project") -- filetype detection must exist before any buffer loads
 
 -- ============================================
 -- Lazy Setup Configuration
@@ -81,6 +82,8 @@ end)
 if not ok then
   vim.notify("⚠️ Failed to load some config modules", vim.log.levels.WARN)
 end
+
+require("config.ide_sync")
 
 -- ============================================
 -- Friendly Startup Message

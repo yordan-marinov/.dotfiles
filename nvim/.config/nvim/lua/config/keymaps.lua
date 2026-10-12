@@ -70,8 +70,10 @@ keymap("n", "gr", vim.lsp.buf.references, opts)
 keymap("n", "gi", vim.lsp.buf.implementation, opts)
 keymap("n", "<leader>rn", vim.lsp.buf.rename, opts)
 keymap("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+-- Through conform (LazyVim.format), like format-on-save: LSP-only formatting
+-- skipped ruff's import sorting, shfmt, tofu fmt and markdownlint.
 keymap("n", "<leader>cf", function()
-  vim.lsp.buf.format({ async = true })
+  LazyVim.format({ force = true })
 end, opts)
 
 -- =========================================

@@ -1,21 +1,29 @@
+local function brainbox_path()
+  if os.getenv("BRAINBOX_PATH") then
+    return os.getenv("BRAINBOX_PATH")
+  end
+  if vim.loop.os_uname().sysname == "Darwin" then
+    return "/Volumes/brainbox/vault"
+  end
+  return vim.fn.expand("$HOME/Google Drive/My Drive/brain-box")
+end
+
 return {
   "epwalsh/obsidian.nvim",
   version = "*",
+  -- setup() raises FileNotFoundError on every start when the vault isn't
+  -- mounted, e.g. on a work laptop.
+  cond = function()
+    return vim.fn.isdirectory(brainbox_path()) == 1
+  end,
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
-    "hrsh7th/nvim-cmp",
     "nvim-treesitter/nvim-treesitter",
   },
   config = function()
-    local function default_brainbox_path()
-      if vim.loop.os_uname().sysname == "Darwin" then
-        return "/Volumes/brainbox/vault"
-      end
-      return vim.fn.expand("$HOME/Google Drive/My Drive/brain-box")
-    end
     require("obsidian").setup({
-      dir = os.getenv("BRAINBOX_PATH") or default_brainbox_path(),
+      dir = brainbox_path(),
 
       notes_subdir = "slnotes",
       new_notes_location = "slnotes",
@@ -34,7 +42,9 @@ return {
         time_format = "%H:%M",
       },
 
-      completion = { nvim_cmp = true, min_chars = 2 },
+      -- LazyVim completes with blink.cmp; pulling nvim-cmp back in for this
+      -- (archived) plugin made the `lang.git` extra's nvim-cmp spec crash at startup.
+      completion = { nvim_cmp = false },
 
       note_id_func = function(title)
         if not title or title == "" then

@@ -39,20 +39,27 @@ vim.opt.isfname:append("@-@") -- include '@' in the set of characters considered
 
 vim.opt.updatetime = 50 -- Time in milliseconds to wait before triggering the plugin events after a change
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = "*.py",
-  callback = function()
-    vim.opt.textwidth = 79
-    vim.opt.colorcolumn = "79"
+-- Wrap and ruler at the project's own ruff/black `line-length` (88 if unset),
+-- not a fixed 79 that fights the formatter. Local options: `vim.opt` here
+-- leaked into every buffer opened afterwards.
+local FileWidth = vim.api.nvim_create_augroup("FileWidth", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = FileWidth,
+  pattern = "python",
+  callback = function(ev)
+    local dir = vim.fs.dirname(vim.api.nvim_buf_get_name(ev.buf))
+    vim.opt_local.textwidth = require("config.project").python_line_length(dir)
+    vim.opt_local.colorcolumn = "+1"
   end,
 }) -- python formatting
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = { "*.js", "*.html", "*.css", "*.lua" },
+vim.api.nvim_create_autocmd("FileType", {
+  group = FileWidth,
+  pattern = { "javascript", "html", "css", "lua", "sh", "bash", "zsh" },
   callback = function()
-    vim.opt.tabstop = 2
-    vim.opt.softtabstop = 2
-    vim.opt.shiftwidth = 2
+    vim.opt_local.tabstop = 2
+    vim.opt_local.softtabstop = 2
+    vim.opt_local.shiftwidth = 2
   end,
 }) -- javascript formatting
 
@@ -96,14 +103,4 @@ vim.api.nvim_create_autocmd("bufWritePost", {
   group = Prettier,
   pattern = "*.vue",
   command = "silent !node_modules/.bin/prettier % -w",
-})
-
-local RuffSort = vim.api.nvim_create_augroup("RuffSort", { clear = true })
-vim.api.nvim_create_autocmd("bufWritePost", {
-  group = RuffSort,
-  pattern = "*.py",
-  callback = function()
-    vim.cmd("silent !ruff check --select I --fix %")
-    vim.cmd("silent !ruff format %")
-  end,
 })

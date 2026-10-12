@@ -1,0 +1,7 @@
+# Default markdownlint rules for repos without their own config, passed with
+# --config by lua/plugins/lang-markdown.lua. Off: the rules that flag nearly
+# every docs page rather than mistakes in it.
+config:
+  MD013: false # line length: tables and long links can't wrap
+  MD033: false # inline HTML: anchors, <details>, mkdocs attributes
+  MD060: false # table column alignment: churns every edited table
