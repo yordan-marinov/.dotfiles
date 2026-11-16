@@ -52,7 +52,17 @@ cd ~/.dotfiles
 ./bootstrap.sh
 ```
 
-On a new Mac, install Homebrew first, then run the bootstrap. Machine-only paths and secrets belong in `~/.zshrc.local`; Git identity belongs in `~/.gitconfig.local` so personal and work laptops do not share the same name/email.
+On a new Mac, install Homebrew first, then run the bootstrap. Machine-only paths and secrets belong in `~/.zshrc.local`; use `~/.gitconfig.local` for a machine-specific Git identity override when needed.
+
+## Updating an existing machine
+```bash
+cd ~/.dotfiles
+git pull --ff-only
+./bootstrap.sh
+exec zsh
+```
+
+The repository contains shared configuration only. Keep machine-specific secrets, SSH keys, and local overrides outside the repository. The tracked Git configuration uses the `github-homecrew-sre` SSH alias for the `mvg-labs` organization, so configure that alias and its private key separately on machines that need to push there.
 
 ## Agent tooling
 Bootstrap installs `omp` using the official installer:
