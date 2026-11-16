@@ -6,3 +6,14 @@
 
 [include]
 	path = ~/.gitconfig.local
+[user]
+	name = homecrew-sre
+	email = jordanmarinov8+homecrew-sre@gmail.com
+[url "git@github-homecrew-sre:mvg-labs/"]
+	insteadOf = git@github.com:mvg-labs/
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
