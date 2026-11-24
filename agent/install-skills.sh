@@ -29,6 +29,8 @@ command -v awk >/dev/null 2>&1 || fail "awk is required"
 
 schema_version="$(lock_value schema_version)"
 release="$(lock_value release)"
+repository="$(lock_value repository)"
+artifact_name="$(lock_value artifact_name)"
 artifact_url="$(lock_value artifact_url)"
 expected_sha256="$(lock_value sha256)"
 [[ "$schema_version" == "coding-factory-skills-lock-v1" ]] \
@@ -62,7 +64,14 @@ archive="$work_dir/skills.tar.gz"
 
 case "$artifact_url" in
   file://*) cp -- "${artifact_url#file://}" "$archive" ;;
-  https://*) curl --fail --location --proto '=https' --tlsv1.2 --silent --show-error "$artifact_url" --output "$archive" ;;
+  https://*)
+    if [[ -n "$repository" && -n "$artifact_name" ]] && command -v gh >/dev/null 2>&1; then
+      gh release download "$release" --repo "$repository" --pattern "$artifact_name" --output "$archive"
+    else
+      curl --fail --location --proto '=https' --tlsv1.2 --silent --show-error \
+        "$artifact_url" --output "$archive"
+    fi
+    ;;
 esac
 
 actual_sha256="$("${hash_command[@]}" "$archive" | awk '{print $1}')"

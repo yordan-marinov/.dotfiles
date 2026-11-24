@@ -1,0 +1,8 @@
+schema_version: coding-factory-skills-lock-v1
+library: coding-factory
+release: v0.1.0
+commit: f55edc687cbb5b6792ea1306f4c6b1a91d33ab88
+repository: mvg-labs/coding-factory
+artifact_name: coding-factory-skills-v0.1.0.tar.gz
+artifact_url: https://github.com/mvg-labs/coding-factory/releases/download/v0.1.0/coding-factory-skills-v0.1.0.tar.gz
+sha256: f3e73640b06e1b6e98db8f5f7f4eab162975963fff17407a76d27c1167316540

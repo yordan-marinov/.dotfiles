@@ -89,6 +89,15 @@ mutable branch or silently install the latest version.
 ./agent/verify-skills.sh
 ```
 
+The adapter installer exposes the same immutable release to:
+
+- `~/.claude/skills` for Claude;
+- `~/.agents/skills` for Codex and omp's standard skills discovery;
+- the canonical versioned store for generic harness adapters.
+
+Existing non-managed skill directories are never overwritten. Managed entries are symlinks to the
+verified release and are replaced only when the lockfile selects a new release.
+
 ## Security note
 Machine-specific secrets should stay outside the repository in local-only files such as `~/.zshrc.local`.
 

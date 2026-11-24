@@ -112,6 +112,8 @@ install_coding_factory_skills() {
 
   SKILLS_LOCK_FILE="$lock_file" "$DOTFILES_DIR/agent/install-skills.sh"
   SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
+    "$DOTFILES_DIR/agent/install-adapters.sh"
+  SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
     "$DOTFILES_DIR/agent/verify-skills.sh"
 }
 
