@@ -117,6 +117,8 @@ install_coding_factory_skills() {
     "$DOTFILES_DIR/agent/install-adapters.sh"
   SKILLS_PROFILE="$profile" SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
     "$DOTFILES_DIR/agent/verify-skills.sh"
+  SKILLS_PROFILE="$profile" SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
+    SKILLS_LOCK_FILE="$lock_file" "$DOTFILES_DIR/agent/doctor.sh"
 }
 
 # Plugins at the lazy-lock.json versions, then every LSP server, linter,

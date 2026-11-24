@@ -17,3 +17,5 @@ SKILLS_PROFILE=company SKILLS_STORE="$STORE" \
   "$DOTFILES_DIR/agent/install-adapters.sh"
 SKILLS_PROFILE=company SKILLS_STORE="$STORE" \
   "$DOTFILES_DIR/agent/verify-skills.sh"
+SKILLS_PROFILE=company SKILLS_STORE="$STORE" SKILLS_LOCK_FILE="$LOCK_FILE" \
+  "$DOTFILES_DIR/agent/doctor.sh"

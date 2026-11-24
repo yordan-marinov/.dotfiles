@@ -1,0 +1,33 @@
+name: agent-environment
+
+on:
+  pull_request:
+    paths:
+      - "agent/**"
+      - "bootstrap.sh"
+      - "README.md"
+      - ".github/workflows/agent-environment.yml"
+  push:
+    branches: [main]
+    paths:
+      - "agent/**"
+      - "bootstrap.sh"
+      - "README.md"
+      - ".github/workflows/agent-environment.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install --yes shellcheck
+      - name: Check shell syntax
+        run: bash -n agent/*.sh bootstrap.sh
+      - name: Run shellcheck
+        run: shellcheck agent/*.sh bootstrap.sh
+      - name: Run isolated agent environment smoke
+        run: agent/test.sh

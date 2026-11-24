@@ -113,6 +113,11 @@ The adapter installer exposes the same immutable release to:
 Existing non-managed skill directories are never overwritten. Managed entries are symlinks to the
 verified release and are replaced only when the lockfile selects a new release.
 
+`agent/doctor.sh` verifies the active profile, release, lock digest, manifest, installed marker,
+adapter metadata, symlink targets, and stale entries without network access. Dotfiles CI runs the
+same checks in isolated temporary homes, including idempotent installs and unmanaged-skill conflict
+rejection.
+
 ## Security note
 Machine-specific secrets should stay outside the repository in local-only files such as `~/.zshrc.local`.
 
