@@ -28,6 +28,7 @@ command -v tar >/dev/null 2>&1 || fail "tar is required"
 command -v awk >/dev/null 2>&1 || fail "awk is required"
 
 schema_version="$(lock_value schema_version)"
+profile="$(lock_value profile)"
 release="$(lock_value release)"
 repository="$(lock_value repository)"
 artifact_name="$(lock_value artifact_name)"
@@ -35,6 +36,7 @@ artifact_url="$(lock_value artifact_url)"
 expected_sha256="$(lock_value sha256)"
 [[ "$schema_version" == "coding-factory-skills-lock-v1" ]] \
   || fail "unsupported skill lock schema: $schema_version"
+[[ "$profile" =~ ^[A-Za-z0-9._-]+$ ]] || fail "lockfile profile is unsafe"
 [[ "$release" =~ ^[A-Za-z0-9._-]+$ ]] || fail "lockfile release is unsafe"
 [[ -n "$artifact_url" ]] || fail "lockfile artifact_url is missing"
 [[ "$expected_sha256" =~ ^[[:xdigit:]]{64}$ ]] || fail "lockfile sha256 must be a 64-character digest"
@@ -51,10 +53,12 @@ else
   fail "sha256sum or shasum is required"
 fi
 
-mkdir -p "$STORE"
-if [[ -f "$STORE/$release/.installed" ]] && grep -Fxq "sha256=$expected_sha256" "$STORE/$release/.installed"; then
-  printf 'skills already installed: %s\n' "$release"
-  printf '%s\n' "$release" > "$STORE/active"
+PROFILE_STORE="$STORE/$profile"
+mkdir -p "$PROFILE_STORE"
+if [[ -f "$PROFILE_STORE/$release/.installed" ]] \
+  && grep -Fxq "sha256=$expected_sha256" "$PROFILE_STORE/$release/.installed"; then
+  printf 'skills already installed: %s (%s)\n' "$release" "$profile"
+  printf '%s\n' "$release" > "$PROFILE_STORE/active"
   exit 0
 fi
 
@@ -85,11 +89,12 @@ tar --extract --file="$archive" --gzip --directory="$stage"
 find "$stage/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print -quit | grep -q . \
   || fail "skill archive contains no SKILL.md files"
 
-install_dir="$STORE/$release"
+install_dir="$PROFILE_STORE/$release"
 if [[ -e "$install_dir" ]]; then
   fail "release already exists with a different digest: $install_dir"
 fi
 mv "$stage" "$install_dir"
-printf 'release=%s\nsha256=%s\n' "$release" "$expected_sha256" > "$install_dir/.installed"
-printf '%s\n' "$release" > "$STORE/active"
+printf 'profile=%s\nrelease=%s\nsha256=%s\n' \
+  "$profile" "$release" "$expected_sha256" > "$install_dir/.installed"
+printf '%s\n' "$release" > "$PROFILE_STORE/active"
 log "installed coding-factory skills: $release"

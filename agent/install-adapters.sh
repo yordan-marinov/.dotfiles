@@ -2,6 +2,7 @@
 set -euo pipefail
 
 STORE="${SKILLS_STORE:-${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills}"
+PROFILE="${SKILLS_PROFILE:-personal}"
 AGENTS_SKILLS_DIR="${AGENTS_SKILLS_DIR:-$HOME/.agents/skills}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME/.codex/skills}"
@@ -12,15 +13,16 @@ fail() {
   exit 1
 }
 
-[[ -f "$STORE/active" ]] || fail "no active skill release: $STORE"
-release="$(cat "$STORE/active")"
-source_dir="$STORE/$release"
+profile_store="$STORE/$PROFILE"
+[[ -f "$profile_store/active" ]] || fail "no active skill release: $profile_store"
+release="$(cat "$profile_store/active")"
+source_dir="$profile_store/$release"
 [[ -f "$source_dir/skills/manifest.yaml" ]] || fail "active release has no skill manifest: $source_dir"
 
 skill_names=()
 while IFS= read -r name; do
   [[ -n "$name" ]] && skill_names+=("$name")
-done < <(awk '/^  - name:/ {print $3}' "$source_dir/skills/manifest.yaml")
+done < <(awk '/^[[:space:]]*-[[:space:]]+name:/ {print $3}' "$source_dir/skills/manifest.yaml")
 [[ "${#skill_names[@]}" -gt 0 ]] || fail "active manifest contains no skills"
 
 sync_adapter() {

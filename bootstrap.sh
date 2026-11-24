@@ -104,16 +104,18 @@ install_herdr() {
 }
 
 install_coding_factory_skills() {
-  local lock_file="$DOTFILES_DIR/agent/skills.lock.yaml"
+  local profile="${SKILLS_PROFILE:-personal}"
+  local lock_file="${SKILLS_LOCK_FILE:-$DOTFILES_DIR/agent/skills.lock.yaml}"
   if [[ ! -f "$lock_file" ]]; then
-    log 'ℹ️ Coding Factory skill lockfile not configured; skipping shared skill install.'
+    log "ℹ️ Coding Factory skill lockfile not configured for profile: $profile; skipping shared skill install."
     return 0
   fi
 
-  SKILLS_LOCK_FILE="$lock_file" "$DOTFILES_DIR/agent/install-skills.sh"
-  SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
+  SKILLS_PROFILE="$profile" SKILLS_LOCK_FILE="$lock_file" \
+    "$DOTFILES_DIR/agent/install-skills.sh"
+  SKILLS_PROFILE="$profile" SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
     "$DOTFILES_DIR/agent/install-adapters.sh"
-  SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
+  SKILLS_PROFILE="$profile" SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
     "$DOTFILES_DIR/agent/verify-skills.sh"
 }
 
