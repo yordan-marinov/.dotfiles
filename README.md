@@ -89,8 +89,9 @@ mutable branch or silently install the latest version.
 ./agent/verify-skills.sh
 ```
 
-The company profile is a conservative candidate containing only `teach` and `domain-modeling`.
-It excludes personal identity, homelab, OIDC, and Agent Platform skills. Use it explicitly:
+The company profile is a conservative candidate containing `teach`, `domain-modeling`, and
+`strategy-router`.
+It excludes personal identity, homelab, OIDC, and Agent Platform skills.
 
 ```bash
 ./agent/bootstrap-company.sh

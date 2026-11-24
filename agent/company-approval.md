@@ -2,10 +2,11 @@
 
 ## Scope
 
-The company profile is a conservative distribution of the Coding Factory library. The v0.1.1 company archive contains only:
+The company profile is a conservative distribution of the Coding Factory library. The v0.1.2 company archive contains only:
 
 - `teach`
 - `domain-modeling`
+- `strategy-router`
 - the shared glossary and filtered manifest
 
 It excludes personal Git identity, homelab, OIDC, and Agent Platform operational skills.
@@ -39,8 +40,8 @@ Record only:
 
 ```text
 profile=company
-release=v0.1.1
-archive_sha256=9be2d9bfd7019352a74a7eef4982b63801c48185b788d8c29972125e5c17ef89
+release=v0.1.2
+archive_sha256=8416f5e42e67165f6196d6b112757285404e54be62650748473856dea0235729
 verification=passed
 ```
 
