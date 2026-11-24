@@ -103,6 +103,18 @@ install_herdr() {
   fi
 }
 
+install_coding_factory_skills() {
+  local lock_file="$DOTFILES_DIR/agent/skills.lock.yaml"
+  if [[ ! -f "$lock_file" ]]; then
+    log 'ℹ️ Coding Factory skill lockfile not configured; skipping shared skill install.'
+    return 0
+  fi
+
+  SKILLS_LOCK_FILE="$lock_file" "$DOTFILES_DIR/agent/install-skills.sh"
+  SKILLS_STORE="${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills" \
+    "$DOTFILES_DIR/agent/verify-skills.sh"
+}
+
 # Plugins at the lazy-lock.json versions, then every LSP server, linter,
 # formatter, debugger and treesitter parser the config lists (:IdeSync in
 # nvim/.config/nvim/lua/config/ide_sync.lua). Otherwise they install in the
@@ -193,6 +205,7 @@ main() {
   stow_modules
   install_omp
   install_herdr
+  install_coding_factory_skills
   sync_neovim
   create_local_override
 

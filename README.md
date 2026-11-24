@@ -79,6 +79,16 @@ brew install herdr
 curl -fsSL https://herdr.dev/install.sh | sh
 ```
 
+Shared Coding Factory skills are installed only when `agent/skills.lock.yaml` is present. The lockfile
+pins an immutable archive URL, release, and SHA-256 digest. `bootstrap.sh` verifies the archive and
+installs it under `${XDG_DATA_HOME:-~/.local/share}/coding-factory/skills`; it does not follow a
+mutable branch or silently install the latest version.
+
+```bash
+./agent/install-skills.sh
+./agent/verify-skills.sh
+```
+
 ## Security note
 Machine-specific secrets should stay outside the repository in local-only files such as `~/.zshrc.local`.
 
