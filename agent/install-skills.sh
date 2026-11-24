@@ -77,6 +77,10 @@ case "$artifact_url" in
     fi
     if [[ -n "$repository" && -n "$artifact_name" ]] && command -v gh >/dev/null 2>&1; then
       gh release download "$release" --repo "$repository" --pattern "$artifact_name" --output "$archive"
+    elif [[ -n "${SKILLS_DOWNLOAD_TOKEN:-}" ]]; then
+      curl --fail --location --proto '=https' --tlsv1.2 --silent --show-error \
+        --header "Authorization: Bearer ${SKILLS_DOWNLOAD_TOKEN}" \
+        "$artifact_url" --output "$archive"
     else
       curl --fail --location --proto '=https' --tlsv1.2 --silent --show-error \
         "$artifact_url" --output "$archive"

@@ -83,6 +83,9 @@ Shared Coding Factory skills are installed only when `agent/skills.lock.yaml` is
 pins an immutable archive URL, release, and SHA-256 digest. `bootstrap.sh` verifies the archive and
 installs it under `${XDG_DATA_HOME:-~/.local/share}/coding-factory/skills`; it does not follow a
 mutable branch or silently install the latest version.
+For workspace bootstrap, `SKILLS_DOWNLOAD_TOKEN` may provide an ephemeral GitHub token for the
+private release asset; it is used only for the download and is never written to the lockfile or
+installed skill store.
 
 ```bash
 ./agent/install-skills.sh

@@ -2,7 +2,7 @@
 
 ## Scope
 
-The company profile is a conservative distribution of the Coding Factory library. The v0.1.2 company archive contains only:
+The company profile is a conservative distribution of the Coding Factory library. The v0.1.3 company archive contains only:
 
 - `teach`
 - `domain-modeling`
@@ -40,8 +40,8 @@ Record only:
 
 ```text
 profile=company
-release=v0.1.2
-archive_sha256=8416f5e42e67165f6196d6b112757285404e54be62650748473856dea0235729
+release=v0.1.3
+archive_sha256=da98257085371e8b134d847e52f99c916167804076117d43a1093db46f2ac8de
 verification=passed
 ```
 
