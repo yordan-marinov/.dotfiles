@@ -77,7 +77,9 @@ find "$stage/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print -quit | grep 
   || fail "skill archive contains no SKILL.md files"
 
 install_dir="$STORE/$release"
-rm -rf "$install_dir"
+if [[ -e "$install_dir" ]]; then
+  fail "release already exists with a different digest: $install_dir"
+fi
 mv "$stage" "$install_dir"
 printf 'release=%s\nsha256=%s\n' "$release" "$expected_sha256" > "$install_dir/.installed"
 printf '%s\n' "$release" > "$STORE/active"
