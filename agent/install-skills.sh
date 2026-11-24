@@ -69,6 +69,12 @@ archive="$work_dir/skills.tar.gz"
 case "$artifact_url" in
   file://*) cp -- "${artifact_url#file://}" "$archive" ;;
   https://*)
+    if [[ "$profile" == company ]]; then
+      command -v gh >/dev/null 2>&1 \
+        || fail "company profile requires the company-approved gh credential helper"
+      gh auth status >/dev/null 2>&1 \
+        || fail "company profile requires an authenticated company gh credential"
+    fi
     if [[ -n "$repository" && -n "$artifact_name" ]] && command -v gh >/dev/null 2>&1; then
       gh release download "$release" --repo "$repository" --pattern "$artifact_name" --output "$archive"
     else

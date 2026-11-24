@@ -93,12 +93,11 @@ The company profile is a conservative candidate containing only `teach` and `dom
 It excludes personal identity, homelab, OIDC, and Agent Platform skills. Use it explicitly:
 
 ```bash
-SKILLS_PROFILE=company \
-SKILLS_LOCK_FILE="$HOME/.dotfiles/agent/skills.lock.company.yaml" \
-./agent/install-skills.sh
-SKILLS_PROFILE=company ./agent/install-adapters.sh
-SKILLS_PROFILE=company ./agent/verify-skills.sh
+./agent/bootstrap-company.sh
 ```
+
+This company-only bootstrap does not apply personal shell, editor, Git, or homelab configuration.
+Approval details are documented in [`agent/company-approval.md`](agent/company-approval.md).
 
 The company profile still downloads from the private `mvg-labs` repository. Company policy and
 repository access must approve that dependency before enabling it on a company-managed machine.
