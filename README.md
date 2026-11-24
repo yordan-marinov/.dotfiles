@@ -92,7 +92,9 @@ mutable branch or silently install the latest version.
 The adapter installer exposes the same immutable release to:
 
 - `~/.claude/skills` for Claude;
-- `~/.agents/skills` for Codex and omp's standard skills discovery;
+- `~/.agents/skills` for omp and the standard agent-skill layout;
+- `~/.codex/skills` for Codex's native global layout;
+- `~/.config/opencode/skills` for OpenCode;
 - the canonical versioned store for generic harness adapters.
 
 Existing non-managed skill directories are never overwritten. Managed entries are symlinks to the

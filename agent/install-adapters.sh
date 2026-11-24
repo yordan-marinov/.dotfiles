@@ -4,6 +4,8 @@ set -euo pipefail
 STORE="${SKILLS_STORE:-${XDG_DATA_HOME:-$HOME/.local/share}/coding-factory/skills}"
 AGENTS_SKILLS_DIR="${AGENTS_SKILLS_DIR:-$HOME/.agents/skills}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
+CODEX_SKILLS_DIR="${CODEX_SKILLS_DIR:-$HOME/.codex/skills}"
+OPENCODE_SKILLS_DIR="${OPENCODE_SKILLS_DIR:-$HOME/.config/opencode/skills}"
 
 fail() {
   printf 'ERROR: %s\n' "$1" >&2
@@ -62,4 +64,8 @@ sync_adapter() {
 
 sync_adapter "$AGENTS_SKILLS_DIR"
 sync_adapter "$CLAUDE_SKILLS_DIR"
+sync_adapter "$CODEX_SKILLS_DIR"
+sync_adapter "$OPENCODE_SKILLS_DIR"
 printf 'omp adapter: %s\n' "$AGENTS_SKILLS_DIR"
+printf 'codex adapter: %s\n' "$CODEX_SKILLS_DIR"
+printf 'opencode adapter: %s\n' "$OPENCODE_SKILLS_DIR"
