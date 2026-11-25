@@ -1,9 +1,9 @@
 schema_version: coding-factory-skills-lock-v1
 library: coding-factory
 profile: personal
-release: v0.1.3
-commit: f6a22ca033f41290fffaf77cf87d528ee16cc9f2
+release: v0.1.5
+commit: 900b15762df4863c1c6ed66a47b7f1e24b851953
 repository: mvg-labs/coding-factory
-artifact_name: coding-factory-skills-v0.1.3.tar.gz
-artifact_url: https://github.com/mvg-labs/coding-factory/releases/download/v0.1.3/coding-factory-skills-v0.1.3.tar.gz
-sha256: 098f003496db292ecff7d2412d579b0602c5e3c39fdd0adda1d6349b2bb34a3d
+artifact_name: coding-factory-skills-v0.1.5.tar.gz
+artifact_url: https://github.com/mvg-labs/coding-factory/releases/download/v0.1.5/coding-factory-skills-v0.1.5.tar.gz
+sha256: 566f82377f8606b4dd3f6ab99a534be4ba95034f583d5e4322e5aabf6dd99a6e

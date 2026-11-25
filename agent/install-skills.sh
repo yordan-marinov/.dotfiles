@@ -96,6 +96,9 @@ mkdir -p "$stage"
 tar --extract --file="$archive" --gzip --directory="$stage"
 [[ -f "$stage/GLOSSARY.md" ]] || fail "skill archive is missing GLOSSARY.md"
 [[ -f "$stage/skills/manifest.yaml" ]] || fail "skill archive is missing skills/manifest.yaml"
+[[ -f "$stage/adapters/manifest.yaml" ]] || fail "skill archive is missing adapters/manifest.yaml"
+grep -Fxq "router_command: coding-factory strategy-route" "$stage/adapters/manifest.yaml" \
+  || fail "skill archive has an incompatible harness adapter manifest"
 find "$stage/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print -quit | grep -q . \
   || fail "skill archive contains no SKILL.md files"
 

@@ -11,6 +11,10 @@ install_dir="$profile_store/$release"
 [[ -f "$install_dir/.installed" ]] || { printf 'ERROR: installed marker is missing: %s\n' "$install_dir" >&2; exit 1; }
 [[ -f "$install_dir/GLOSSARY.md" ]] || { printf 'ERROR: GLOSSARY.md is missing\n' >&2; exit 1; }
 [[ -f "$install_dir/skills/manifest.yaml" ]] || { printf 'ERROR: skill manifest is missing\n' >&2; exit 1; }
+[[ -f "$install_dir/adapters/manifest.yaml" ]] \
+  || { printf 'ERROR: harness adapter manifest is missing\n' >&2; exit 1; }
+grep -Fxq 'router_command: coding-factory strategy-route' "$install_dir/adapters/manifest.yaml" \
+  || { printf 'ERROR: harness adapter manifest is incompatible\n' >&2; exit 1; }
 find "$install_dir/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print -quit | grep -q . \
   || { printf 'ERROR: no installed skills found\n' >&2; exit 1; }
 

@@ -10,10 +10,12 @@ make_archive() {
   local profile="$1"
   local output="$2"
   local stage="$WORK_DIR/$profile"
-  mkdir -p "$stage/skills/teach" "$stage/skills/domain-modeling"
+  mkdir -p "$stage/skills/teach" "$stage/skills/domain-modeling" "$stage/adapters"
   printf '# Glossary\n' > "$stage/GLOSSARY.md"
   printf '# Teach\n' > "$stage/skills/teach/SKILL.md"
   printf '# Domain Modeling\n' > "$stage/skills/domain-modeling/SKILL.md"
+  printf 'schema_version: coding-factory-harness-adapters-v1\nrouter_command: coding-factory strategy-route\n' \
+    > "$stage/adapters/manifest.yaml"
   local entries="- name: teach\n  path: skills/teach/SKILL.md\n  invocation: user\n- name: domain-modeling\n  path: skills/domain-modeling/SKILL.md\n  invocation: model\n"
   if [[ "$profile" == personal ]]; then
     mkdir -p "$stage/skills/private-skill"

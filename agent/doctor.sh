@@ -89,6 +89,14 @@ if [[ -f "$manifest" ]]; then
 else
   fail_check manifest "missing:$manifest"
 fi
+adapter_manifest="$install_dir/adapters/manifest.yaml"
+if [[ -f "$adapter_manifest" ]]; then
+  grep -Fxq 'router_command: coding-factory strategy-route' "$adapter_manifest" \
+    && pass_check adapter_manifest \
+    || fail_check adapter_manifest incompatible
+else
+  fail_check adapter_manifest "missing:$adapter_manifest"
+fi
 
 skill_names=()
 if [[ -f "$manifest" ]]; then
