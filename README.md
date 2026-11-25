@@ -92,8 +92,9 @@ installed skill store.
 ./agent/verify-skills.sh
 ```
 
-The company profile is a conservative candidate containing `teach`, `domain-modeling`, and
-`strategy-router`.
+The company profile is a conservative candidate containing:
+
+- `teach`, `merge-danger`, `automated-code-review`, `domain-modeling`, `strategy-router`, and `repository-consistency`.
 It excludes personal identity, homelab, OIDC, and Agent Platform skills.
 
 ```bash

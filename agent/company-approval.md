@@ -2,11 +2,14 @@
 
 ## Scope
 
-The v0.1.5 company archive contains only:
+The v0.1.11 company archive contains only:
 
 - `teach`
+- `merge-danger`
+- `automated-code-review`
 - `domain-modeling`
 - `strategy-router`
+- `repository-consistency`
 - the shared glossary, filtered manifest, and harness adapter instructions
 
 It excludes personal Git identity, homelab, OIDC, and Agent Platform operational skills.
@@ -40,8 +43,8 @@ Record only:
 
 ```text
 profile=company
-release=v0.1.5
-archive_sha256=ae56c73ce3fd248b57716e031e0c555c6994f3b481ce27e7a71650da8b18fad0
+release=v0.1.11
+archive_sha256=78cf109653ba7e9f316df1989e299965c5fa1f07c8d64e2710da7a8d5c75d344
 verification=passed
 ```
 
